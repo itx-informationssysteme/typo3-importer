@@ -16,9 +16,9 @@
 		"TYPO3 CMS"
 	],
 	"require" : {
-		"typo3/cms-core" : "^11.5",
-		"typo3/cms-rte-ckeditor" : "^11.5",
-		"typo3/cms-fluid-styled-content" : "^11.5",
+		"typo3/cms-core" : "^12",
+		"typo3/cms-rte-ckeditor" : "^12",
+		"typo3/cms-fluid-styled-content" : "^12",
 		"symfony/serializer" : "^5.2"
 	},
 	"autoload" : {
