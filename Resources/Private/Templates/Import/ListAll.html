@@ -1,0 +1,34 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+    xmlns:importer="http://typo3.org/ns/Itx/Importer/ViewHelpers"
+    xmlns:core="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+    data-namespace-typo3-fluid="true">
+
+<f:layout name="Default"/>
+<f:section name="Content">
+    <f:flashMessages/>
+    <nav class="p-2" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <f:link.action action="list" controller="Import">Imports</f:link.action>
+            </li>
+            <li>
+                <core:icon identifier="actions-chevron-right"></core:icon>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{importName} Imports</li>
+        </ol>
+    </nav>
+    <h2>{importName} Imports</h2>
+    <f:if condition="{imports}">
+        <f:then>
+            <f:render partial="Backend/ImportsTable" arguments="{imports: imports}"></f:render>
+        </f:then>
+        <f:else>
+            <div class="alert alert-info">
+                No imports
+            </div>
+        </f:else>
+    </f:if>
+    <f:render partial="ImportListPagination" arguments="{pagination: pagination, paginator: paginator, action: 'listAll', importType: importType}"></f:render>
+</f:section>

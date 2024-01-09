@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Created with Vectornator (http://vectornator.io/) -->
+<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 28 28" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs/>
+<clipPath id="ArtboardFrame">
+<rect height="28" width="28" x="0" y="0"/>
+</clipPath>
+<g clip-path="url(#ArtboardFrame)" id="Ohne-Titel">
+<path d="M0 0L1000 0L1000 0L1000 1000L1000 1000L0 1000L0 1000L0 0L0 0Z" fill="#176ede" fill-rule="nonzero" opacity="1" stroke="#ffffff" stroke-linecap="butt" stroke-linejoin="miter" stroke-width="0"/>
+<path d="M10.1461 10.1461L9.50375 10.1461C8.43952 10.1461 7.57679 11.0088 7.57679 12.073L7.57679 18.4962C7.57679 19.5605 8.43952 20.4232 9.50375 20.4232L15.927 20.4232C16.9912 20.4232 17.8539 19.5605 17.8539 18.4962L17.8539 12.073C17.8539 11.0088 16.9912 10.1461 15.927 10.1461L15.2846 10.1461M10.1461 13.3577L12.7154 15.927M12.7154 15.927L15.2846 13.3577M12.7154 15.927L12.7154 5.00751M17.8539 12.7154L18.4962 12.7154C19.5605 12.7154 20.4232 13.5781 20.4232 14.6423L20.4232 21.0655C20.4232 22.1298 19.5605 22.9925 18.4962 22.9925L12.073 22.9925C11.0088 22.9925 10.1461 22.1298 10.1461 21.0655L10.1461 20.4232" fill="none" opacity="1" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+</g>
+</svg>

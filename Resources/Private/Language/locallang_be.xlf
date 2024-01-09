@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2022-11-25UTC09:50:220">
+        <header>
+            <authorName>Itx-Typo3-Team</authorName>
+        </header>
+        <body>
+        	<trans-unit id="mlang_tabs_tab">
+        		<source>Import Management</source>
+        	</trans-unit>
+            <trans-unit id="backend_layout.default">
+                <source>Default</source>
+            </trans-unit>
+            <trans-unit id="backend_layout.column.normal">
+                <source>Normal</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

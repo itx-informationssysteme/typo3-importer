@@ -1,0 +1,40 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+    xmlns:importer="http://typo3.org/ns/Itx/Importer/ViewHelpers"
+    data-namespace-typo3-fluid="true">
+<f:layout name="SystemEmail"/>
+
+<f:section name="Main">
+    <h2>
+        Import {importName} [{import.uid}] failed
+    </h2>
+
+    <p>
+        Number of failed jobs: {import.failedJobs} / {import.totalJobs}
+    </p>
+
+    <p>
+        Number of completed jobs: {import.completedJobs} / {import.totalJobs}
+    </p>
+
+    <p>
+        Import start time:
+        <f:format.date format="d.m.Y - H:i:s">{import.startTime}</f:format.date>
+    </p>
+
+    <p>
+        Import end time:
+        <f:format.date format="d.m.Y - H:i:s">{import.endTime}</f:format.date>
+    </p>
+
+    <p>
+        Import duration:
+        <importer:dateInterval date2="{import.startTime}" date1="{import.endTime}"></importer:dateInterval>
+    </p>
+
+    <p>
+        <f:link.external uri="{importUrl}" target="blank">View import record</f:link.external>
+    </p>
+</f:section>
+</html>

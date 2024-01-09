@@ -1,0 +1,2 @@
+Import: {import.uid} failed
+Number of failed jobs: {numberOfFailedJobs}

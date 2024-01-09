@@ -1,0 +1,39 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    _instanceof:
+        Itx\Importer\Consumer\ConsumerInterface:
+            tags: [ 'queue_consumer' ]
+            lazy: true
+        Itx\Importer\Command\Producer\AbstractJobProducer:
+            tags: [ 'queue_producer' ]
+            lazy: true
+
+    Itx\Importer\:
+        resource: '../Classes/*'
+        exclude: '../Classes/Domain/Model/*'
+
+    Itx\Importer\Controller\ImportController:
+        arguments: [ !tagged 'queue_producer' ]
+
+    Itx\Importer\Command\QueueWorker:
+        arguments: [!tagged 'queue_consumer', !tagged 'queue_producer']
+        tags:
+            -   name: 'console.command'
+                command: 'importer:queue-worker'
+                description: 'This queue worker runs all job that were added to the queue. This command can run in parallel with multiple of its kind.'
+
+    Itx\Importer\Command\QueueWorkerManager:
+        tags:
+            -   name: 'console.command'
+                command: 'importer:queue-worker-manager'
+                description: 'Import queue worker manager.'
+
+    Itx\Importer\Command\Producer\ExampleProducer:
+        tags:
+            -   name: 'console.command'
+                command: 'importer:producer:example'
+                description: 'This command is an example producer that adds a job to the queue.'

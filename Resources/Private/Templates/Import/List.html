@@ -1,0 +1,62 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+    xmlns:importer="http://typo3.org/ns/Itx/Importer/ViewHelpers"
+    data-namespace-typo3-fluid="true">
+
+<f:layout name="Default"/>
+<f:section name="Content">
+    <h2>Import Management</h2>
+
+    <f:flashMessages />
+
+    <div class="panel-group" id="accordionExampleSimple">
+        <f:for as="importGroup" each="{importGroups}">
+            <div class="panel panel-default">
+                <div class="panel-heading d-flex justify-content-between">
+                    <h3 class="panel-title" id="simple-heading-panel-{importGroup.type}">
+                        <a href="#" class="collapsed" data-bs-toggle="collapse" data-bs-target="#simple-panel-{importGroup.type}" aria-expanded="false" aria-controls="simple-panel-{importGroup.type}">
+
+                            <strong>{importGroup.label} Import</strong>
+                        </a>
+                    </h3>
+                </div>
+                <div id="simple-panel-{importGroup.type}" class="collapse show" aria-labelledby="simple-heading-panel-{importGroup.type}">
+                    <div class="panel-body">
+                        <f:if condition="!{importGroup.currentlyRunning}">
+                            <f:if condition="{importGroup.taskData}">
+                                <f:then>
+                                    <f:be.infobox title="Scheduled" disableIcon="true" state="-2">
+                                        <p>
+                                            Next execution:
+                                            <f:format.date format="d.m.Y - H:i:s">{importGroup.taskData.nextExecution}</f:format.date>
+                                        </p>
+                                    </f:be.infobox>
+                                </f:then>
+                                <f:else>
+                                    <f:be.infobox title="Not scheduled" state="1">
+                                        For this import type no scheduler task is scheduled. Please create a scheduler task with the according producer as command.
+                                    </f:be.infobox>
+                                </f:else>
+                            </f:if>
+                        </f:if>
+
+                        <div class="panel panel-default">
+                            <f:render partial="Backend/ImportsTable" arguments="{imports: importGroup.imports}"></f:render>
+                        </div>
+
+                        <div class="d-flex gap-4">
+                            <f:if condition="{importGroup.imports -> f:count()} >= {itemsPerGroup}">
+                                <f:link.action class="btn btn-default" action="listAll" arguments="{'importType': importGroup.type}" controller="Import">
+                                    View all
+                                </f:link.action>
+                            </f:if>
+                            <f:link.action class="btn btn-primary" action="startImport" arguments="{importType: importGroup.type}">Manual import</f:link.action>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </f:for>
+    </div>
+</f:section>
+</html>
