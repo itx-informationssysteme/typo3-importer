@@ -25,7 +25,7 @@ class ImportRepository extends Repository
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
-        
+
         $query->setOrderings(['start_time' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING])
               ->matching($query->equals('import_type', $importType));
 
@@ -48,10 +48,9 @@ class ImportRepository extends Repository
         $query->getQuerySettings()->setRespectStoragePage(false);
 
         $query->setOrderings(['start_time' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING])
-              ->matching($query->logicalAnd([
-                                                $query->equals('import_type', $importType),
-                                                $query->equals('status', $status),
-                                            ]));
+              ->matching($query->logicalAnd($query->equals('import_type', $importType),
+                                             $query->equals('status', $status),
+                                            ));
 
         return $query->execute()->count();
     }

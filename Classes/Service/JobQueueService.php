@@ -43,7 +43,7 @@ class JobQueueService
 
         $job->setPayloadType(get_class($payload));
         $job->setSorting(0);
-        $job->setPid(-1);
+        $job->setPid(0);
 
         $job->setImport($import);
 
@@ -60,7 +60,7 @@ class JobQueueService
         $job = new Job();
         $job->setPayloadType('');
         $job->setPayload('');
-        $job->setPid(-1);
+        $job->setPid(0);
         $job->setStatus(Job::STATUS_QUEUED);
         $job->setSorting(time());
         $job->setImport($import);
