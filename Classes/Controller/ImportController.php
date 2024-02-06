@@ -148,7 +148,7 @@ class ImportController extends ActionController
 
         $projectRoot = Environment::getProjectPath();
 
-        $result = exec(sprintf("$projectRoot/vendor/bin/typo3cms importer:producer:%s", $importType), $output, $returnCode);
+        $result = exec(sprintf("$projectRoot/vendor/bin/typo3 importer:producer:%s", $importType), $output, $returnCode);
         if ($result === false) {
             throw new \RuntimeException('Error while starting import', 1599638230);
         }
