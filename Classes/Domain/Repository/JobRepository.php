@@ -32,9 +32,9 @@ class JobRepository extends Repository
         $query->matching($query->equals('status', Job::STATUS_QUEUED));
         $query->setLimit(1);
         $query->setOrderings([
-                                 'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING,
-                                 'uid' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
-                             ]);
+            'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING,
+            'uid' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING,
+        ]);
 
         $job = $query->execute()->getFirst();
         if ($job === null) {
@@ -43,11 +43,19 @@ class JobRepository extends Repository
 
         // Set the status to "in progress"
         $result = $queryBuilder->update('tx_importer_domain_model_job')
-                               ->where($queryBuilder->expr()->eq('uid',
-                                                                 $queryBuilder->createNamedParameter($job->getUid(),
-                                                                                                     \PDO::PARAM_INT)),
-                                       $queryBuilder->expr()->eq('status',
-                                                                 $queryBuilder->createNamedParameter(Job::STATUS_QUEUED)))
+                               ->where(
+                                   $queryBuilder->expr()->eq(
+                                       'uid',
+                                       $queryBuilder->createNamedParameter(
+                                           $job->getUid(),
+                                           \PDO::PARAM_INT
+                                       )
+                                   ),
+                                   $queryBuilder->expr()->eq(
+                                       'status',
+                                       $queryBuilder->createNamedParameter(Job::STATUS_QUEUED)
+                                   )
+                               )
                                ->set('status', Job::STATUS_RUNNING)
                                ->set('start_time', time(), true, \PDO::PARAM_INT)
                                ->execute();
@@ -71,9 +79,13 @@ class JobRepository extends Repository
                                       ->getQueryBuilderForTable('tx_importer_domain_model_job');
 
         $result = $queryBuilder->update('tx_importer_domain_model_job')
-                               ->where($queryBuilder->expr()->eq('uid',
-                                                                 $queryBuilder->createNamedParameter($job->getUid(),
-                                                                                                     \PDO::PARAM_INT)))
+                               ->where($queryBuilder->expr()->eq(
+                                   'uid',
+                                   $queryBuilder->createNamedParameter(
+                                       $job->getUid(),
+                                       \PDO::PARAM_INT
+                                   )
+                               ))
                                ->set('status', Job::STATUS_QUEUED)
                                ->set('sorting', $job->getSorting() + 30, true, \PDO::PARAM_INT)
                                ->execute();
@@ -102,9 +114,13 @@ class JobRepository extends Repository
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->getQuerySettings()->setRespectSysLanguage(false);
 
-        $query->matching($query->logicalAnd($query->equals('import', $import->getUid()),
-                                            $query->logicalOr($query->equals('status', Job::STATUS_QUEUED),
-                                                              $query->equals('status', Job::STATUS_RUNNING))));
+        $query->matching($query->logicalAnd(
+            $query->equals('import', $import->getUid()),
+            $query->logicalOr(
+                $query->equals('status', Job::STATUS_QUEUED),
+                $query->equals('status', Job::STATUS_RUNNING)
+            )
+        ));
 
         return $query->execute()->count();
     }
@@ -117,9 +133,11 @@ class JobRepository extends Repository
         $query->getQuerySettings()->setRespectSysLanguage(false);
 
         $logicalAnd = [
-            $query->logicalOr($query->equals('status', Job::STATUS_QUEUED),
-                              $query->equals('status', Job::STATUS_RUNNING)),
-            $query->equals('isFinisher', false)
+            $query->logicalOr(
+                $query->equals('status', Job::STATUS_QUEUED),
+                $query->equals('status', Job::STATUS_RUNNING)
+            ),
+            $query->equals('isFinisher', false),
         ];
 
         if ($import !== null) {
@@ -147,10 +165,12 @@ class JobRepository extends Repository
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->getQuerySettings()->setRespectSysLanguage(false);
 
-        $query->matching($query->logicalAnd($query->equals('status', Job::STATUS_RUNNING),
-                                            $query->equals('isFinisher', false),
-                                            $query->equals('import', $import->getUid()),
-                                            $query->lessThan('startTime', time() - $timeout)));
+        $query->matching($query->logicalAnd(
+            $query->equals('status', Job::STATUS_RUNNING),
+            $query->equals('isFinisher', false),
+            $query->equals('import', $import->getUid()),
+            $query->lessThan('startTime', time() - $timeout)
+        ));
 
         return $query->execute();
     }
@@ -174,8 +194,10 @@ class JobRepository extends Repository
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->getQuerySettings()->setRespectSysLanguage(false);
 
-        $query->matching($query->logicalAnd($query->equals('status', Job::STATUS_COMPLETED),
-                                            $query->equals('import', $importUid)));
+        $query->matching($query->logicalAnd(
+            $query->equals('status', Job::STATUS_COMPLETED),
+            $query->equals('import', $importUid)
+        ));
 
         return $query->execute()->count();
     }
@@ -186,8 +208,10 @@ class JobRepository extends Repository
 
         $query->getQuerySettings()->setRespectStoragePage(false);
 
-        return $query->matching($query->logicalAnd($query->equals('import', $import->getUid()),
-                                                   $query->equals('status', $status)))->execute();
+        return $query->matching($query->logicalAnd(
+            $query->equals('import', $import->getUid()),
+            $query->equals('status', $status)
+        ))->execute();
     }
 
     public function findFinisherByImportId(int $id): null|object
@@ -196,8 +220,10 @@ class JobRepository extends Repository
 
         $query->getQuerySettings()->setRespectStoragePage(false);
 
-        return $query->matching($query->logicalAnd($query->equals('import', $id),
-                                                   $query->equals('is_finisher', 1)))->execute()->getFirst();
+        return $query->matching($query->logicalAnd(
+            $query->equals('import', $id),
+            $query->equals('is_finisher', 1)
+        ))->execute()->getFirst();
     }
 
     public function findAll()
@@ -206,5 +232,22 @@ class JobRepository extends Repository
         $query->getQuerySettings()->setRespectStoragePage(false);
 
         return $query->execute();
+    }
+
+    public function deleteByImport(Import $import): int
+    {
+        $queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
+                                      ->getQueryBuilderForTable('tx_importer_domain_model_job');
+
+        $result = $queryBuilder->delete('tx_importer_domain_model_job')
+                               ->where($queryBuilder->expr()->eq(
+                                   'import',
+                                   $queryBuilder->createNamedParameter(
+                                       $import->getUid(),
+                                       \PDO::PARAM_INT
+                                   )
+                               ))
+                               ->execute();
+        return $result;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Itx\Importer\Domain\Repository;
 
+use Itx\Importer\Domain\Model\Import;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -61,6 +62,25 @@ class ImportRepository extends Repository
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->setOrderings(['uid' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING]);
+
+        return $query->execute();
+    }
+
+    public function findOutdatedImports(string $importType, int $keep = 10): QueryResultInterface
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+
+        $query->setOrderings(['end_time' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING])
+              ->matching($query->logicalAnd(...[
+                  $query->equals('import_type', $importType),
+                  $query->logicalOr(...[
+                      $query->equals('status', Import::IMPORT_STATUS_COMPLETED),
+                      $query->equals('status', Import::IMPORT_STATUS_FAILED),
+                  ]),
+              ]));
+
+        $query->setOffset($keep);
 
         return $query->execute();
     }
