@@ -15,7 +15,7 @@ class QueueWorkerManager extends Command
     protected function configure(): void
     {
         $this->addArgument('workerCount', InputArgument::OPTIONAL, 'Number of workers to start', 4);
-        $this->addArgument('maxJobs', InputArgument::OPTIONAL, 'Maximum jobs per worker, before it stops', 20000);
+        $this->addArgument('maxJobs', InputArgument::OPTIONAL, 'Maximum jobs per worker, before it stops', 100);
     }
 
     public function __construct(protected JobRepository $jobRepository, string $name = null)
