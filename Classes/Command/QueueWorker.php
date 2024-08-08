@@ -59,7 +59,6 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
     protected BackendUserRepository $userRepository;
     protected UriBuilder $uriBuilder;
 
-    protected Request $request;
     protected ImportController $importController;
 
     /** @var array<string, ConsumerInterface> */
@@ -82,7 +81,6 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
                                 ImportRepository          $importRepository,
                                 BackendUserRepository     $userRepository,
                                 UriBuilder                $uriBuilder,
-                                Request                   $request,
                                 protected JobQueueService $jobQueueService)
     {
         $this->jobRepository = $jobRepository;
@@ -91,7 +89,6 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
         $this->importRepository = $importRepository;
         $this->userRepository = $userRepository;
         $this->uriBuilder = $uriBuilder;
-        $this->request = $request;
 
         $this->processId = getmypid();
         $this->logPrefix = sprintf('[WORKER-%s] ', $this->processId);
@@ -338,7 +335,7 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
             $this->logger->info($this->logPrefix . " Job {$timeoutJob->getUid()} exceeded timeout, setting to failed");
             $timeoutJob->setStatus(Job::STATUS_FAILED);
             $timeoutJob->setEndTime(new DateTime());
-            $timeoutJob->setFailureReason("Job exceeded timeout of ${timeout}s");
+            $timeoutJob->setFailureReason("Job exceeded timeout of {$timeout}s");
             $this->jobRepository->update($timeoutJob);
         }
 

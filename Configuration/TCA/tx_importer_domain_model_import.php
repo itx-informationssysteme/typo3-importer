@@ -116,16 +116,16 @@ return [
                 'readOnly' => true,
                 'items' => [
                     [
-                        'Running',
-                        'RUNNING',
+                        'label' => 'Running',
+                        'value' => 'RUNNING',
                     ],
                     [
-                        'Completed',
-                        'COMPLETED',
+                        'label' => 'Completed',
+                        'value' => 'COMPLETED',
                     ],
                     [
-                        'Failed',
-                        'FAILED',
+                        'label' => 'Failed',
+                        'value' => 'FAILED',
                     ],
                 ],
             ],

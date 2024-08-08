@@ -5,10 +5,10 @@ namespace Itx\Importer\Service;
 use Itx\Importer\Domain\Model\Import;
 use Itx\Importer\Domain\Repository\ImportRepository;
 use Itx\Importer\Domain\Repository\StatisticRepository;
-use Symfony\Component\Lock\Lock;
 use TYPO3\CMS\Core\Locking\Exception\LockAcquireException;
 use TYPO3\CMS\Core\Locking\Exception\LockAcquireWouldBlockException;
 use TYPO3\CMS\Core\Locking\Exception\LockCreateException;
+use TYPO3\CMS\Core\Locking\LockingStrategyInterface;
 use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
 use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -27,7 +27,7 @@ class StatisticsService
     {
     }
 
-    private function getLockOrCreate(string $name): Lock
+    private function getLockOrCreate(string $name): LockingStrategyInterface
     {
         if (!isset($this->locks[$name])) {
             $this->locks[$name] = $this->lockingService->createLock($name);
@@ -71,7 +71,7 @@ class StatisticsService
             $statistic = new \Itx\Importer\Domain\Model\Statistic();
             $statistic->setRecordName($recordName);
             $statistic->setRecordTable($tableName);
-            $statistic->setPid(-1);
+            $statistic->setPid(0);
             $statistic->setNumberAdded(0);
             $statistic->setNumberUpdated(0);
             $statistic->setNumberDeleted(0);
