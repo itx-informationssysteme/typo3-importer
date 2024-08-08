@@ -11,12 +11,12 @@ class ImportRepository extends Repository
     public function findLastImportWithTypeAndJobs(string $type): QueryResultInterface
     {
         $query = $this->createQuery();
-        $query->matching($query->logicalAnd([
-                                                $query->equals('import_type', $type),
-                                                $query->greaterThan('total_jobs', 0),
-                                            ]))->setOrderings([
-                                                                  'crdate' => QueryInterface::ORDER_DESCENDING,
-                                                              ])->setLimit(1);
+        $query->matching($query->logicalAnd(...[
+            $query->equals('import_type', $type),
+            $query->greaterThan('total_jobs', 0),
+        ]))->setOrderings([
+            'crdate' => QueryInterface::ORDER_DESCENDING,
+        ])->setLimit(1);
 
         return $query->execute();
     }
@@ -25,7 +25,7 @@ class ImportRepository extends Repository
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
-        
+
         $query->setOrderings(['start_time' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING])
               ->matching($query->equals('import_type', $importType));
 
@@ -48,17 +48,16 @@ class ImportRepository extends Repository
         $query->getQuerySettings()->setRespectStoragePage(false);
 
         $query->setOrderings(['start_time' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING])
-              ->matching($query->logicalAnd([
-                                                $query->equals('import_type', $importType),
-                                                $query->equals('status', $status),
-                                            ]));
+              ->matching($query->logicalAnd(...[
+                  $query->equals('import_type', $importType),
+                  $query->equals('status', $status),
+              ]));
 
         return $query->execute()->count();
     }
 
     public function findAll()
     {
-
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->setOrderings(['uid' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING]);
