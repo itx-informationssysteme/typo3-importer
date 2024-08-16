@@ -10,11 +10,11 @@ use Itx\Importer\Domain\Repository\JobRepository;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use TYPO3\CMS\Beuser\Domain\Model\ModuleData;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
@@ -30,9 +30,6 @@ class ImportController extends ActionController
     protected const ITEMS_PER_PAGE_JOBS_DETAIL = 5;
     protected const ITEMS_PER_PAGE_LIST_ALL = 10;
     protected const ITEMS_PER_PAGE_LIST_GROUP = 3;
-
-    protected ?ModuleData $moduleData = null;
-    protected ?ModuleTemplate $moduleTemplate = null;
 
     /** @var array<AbstractJobProducer> */
     protected array $importProducer = [];
@@ -64,18 +61,13 @@ class ImportController extends ActionController
         }
     }
 
-    public function initializeAction(): void
-    {
-        $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
-        $this->moduleTemplate->setTitle('');
-
-    }
-
     /**
      * @return ResponseInterface
      */
     public function listAction(): ResponseInterface
     {
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+
         $importTypes = [];
 
         foreach ($this->importProducer as $producer) {
@@ -113,10 +105,10 @@ class ImportController extends ActionController
             ];
         }
 
-        $this->view->assign('importGroups', $importTypes);
-        $this->view->assign('itemsPerGroup', self::ITEMS_PER_PAGE_LIST_GROUP);
+        $moduleTemplate->assign('importGroups', $importTypes);
+        $moduleTemplate->assign('itemsPerGroup', self::ITEMS_PER_PAGE_LIST_GROUP);
 
-        return $this->htmlResponse();
+        return $moduleTemplate->renderResponse('List');
 
     }
 
@@ -125,6 +117,8 @@ class ImportController extends ActionController
      */
     public function listAllAction(string $importType): ResponseInterface
     {
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+
         $imports = $this->importRepository->findNByImportType($importType);
 
         $page = $this->request->hasArgument('page') ? (int)$this->request->getArgument('page') : 1;
@@ -132,7 +126,7 @@ class ImportController extends ActionController
         $paginator = new QueryResultPaginator($imports, $page, self::ITEMS_PER_PAGE_LIST_ALL);
         $pagination = new SimplePagination($paginator);
 
-        $this->view->assignMultiple([
+        $moduleTemplate->assignMultiple([
                                         'imports' => $paginator->getPaginatedItems(),
                                         'pagination' => $pagination,
                                         'paginator' => $paginator,
@@ -140,7 +134,7 @@ class ImportController extends ActionController
                                         'importName' => $this->importProducer[$importType]::getImportLabel(),
                                     ]);
 
-        return $this->htmlResponse();
+        return $moduleTemplate->renderResponse('ListAll');
     }
 
     /**
@@ -154,7 +148,7 @@ class ImportController extends ActionController
 
         $projectRoot = Environment::getProjectPath();
 
-        $result = exec(sprintf("$projectRoot/vendor/bin/typo3cms importer:producer:%s", $importType), $output, $returnCode);
+        $result = exec(sprintf("$projectRoot/vendor/bin/typo3 importer:producer:%s", $importType), $output, $returnCode);
         if ($result === false) {
             throw new \RuntimeException('Error while starting import', 1599638230);
         }
@@ -164,7 +158,7 @@ class ImportController extends ActionController
             throw new \RuntimeException("Error while starting import, return code was $returnCode: $output", 1599638330);
         }
 
-        $this->addFlashMessage('Import started', '', \TYPO3\CMS\Core\Messaging\AbstractMessage::OK);
+        $this->addFlashMessage('Import started', '', ContextualFeedbackSeverity::OK);
 
         return $this->redirectToUri($this->uriBuilder->reset()->uriFor('list'));
     }
@@ -178,6 +172,8 @@ class ImportController extends ActionController
      */
     public function showAction(?Import $import = null): ResponseInterface
     {
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+
         if ($import === null) {
             /** @var ErrorController $errorController */
             $errorController = GeneralUtility::makeInstance(ErrorController::class);
@@ -201,17 +197,17 @@ class ImportController extends ActionController
                                                  self::ITEMS_PER_PAGE_JOBS_DETAIL);
         $jobPagination = new SimplePagination($jobPaginator);
 
-        $this->view->assign('import', $import);
-        $this->view->assign('importName', $this->importProducer[$import->getImportType()]::getImportLabel());
+        $moduleTemplate->assign('import', $import);
+        $moduleTemplate->assign('importName', $this->importProducer[$import->getImportType()]::getImportLabel());
 
-        $this->view->assign('progress', $progress);
-        $this->view->assign('totalJobs', $totalJobs);
-        $this->view->assign('jobsToProcess', $jobsToProcess);
+        $moduleTemplate->assign('progress', $progress);
+        $moduleTemplate->assign('totalJobs', $totalJobs);
+        $moduleTemplate->assign('jobsToProcess', $jobsToProcess);
 
-        $this->view->assign('jobPaginator', $jobPaginator);
-        $this->view->assign('jobPagination', $jobPagination);
-        $this->view->assign('jobs', $jobPaginator->getPaginatedItems());
+        $moduleTemplate->assign('jobPaginator', $jobPaginator);
+        $moduleTemplate->assign('jobPagination', $jobPagination);
+        $moduleTemplate->assign('jobs', $jobPaginator->getPaginatedItems());
 
-        return $this->htmlResponse();
+        return $moduleTemplate->renderResponse('Show');
     }
 }

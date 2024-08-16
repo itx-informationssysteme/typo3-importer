@@ -32,6 +32,14 @@ services:
                 command: 'importer:queue-worker-manager'
                 description: 'Import queue worker manager.'
 
+    Itx\Importer\Command\CleanupCommand:
+        arguments: [ !tagged 'queue_producer' ]
+        tags:
+            -   name: 'console.command'
+                command: 'importer:cleanup'
+                description: 'This command cleans up old imports.'
+
+
     Itx\Importer\Command\Producer\ExampleProducer:
         tags:
             -   name: 'console.command'

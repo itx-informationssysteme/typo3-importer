@@ -30,7 +30,7 @@ class QueueWorkerManager extends Command
     {
         $workerCount = (int)$input->getArgument('workerCount');
         $maxJobs = (int)$input->getArgument('maxJobs');
-        $consolePath = Environment::getProjectPath() . '/vendor/bin/typo3cms';
+        $consolePath = Environment::getProjectPath() . '/vendor/bin/typo3';
 
         $availableJobs = $this->jobRepository->countIncompleteJobsWithoutFinisherJob();
         if ($availableJobs === 0) {

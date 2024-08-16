@@ -2,7 +2,6 @@
 
 namespace Itx\Importer\Domain\Model;
 
-use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -26,7 +25,7 @@ class Import extends AbstractDomainObject
     /**
      * @var ObjectStorage<Statistic>
      * @TYPO3\CMS\Extbase\Annotation\ORM\Lazy
-     * @Cascade("remove")
+     * @TYPO3\CMS\Extbase\Annotation\ORM\Cascade("remove")
      */
     protected ObjectStorage $statistics;
 

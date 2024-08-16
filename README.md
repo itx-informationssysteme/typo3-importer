@@ -80,3 +80,9 @@ To have data in different places make sure to use the same table name and record
 together, when called multiple times.
 
 You can see the resulting statistics records in the backend module.
+
+## Cleanup
+
+There is a cleanup command that can be used to delete previous imports and their data.
+
+	vendor/bin/typo3cms importer:cleanup <keep number of imports>
