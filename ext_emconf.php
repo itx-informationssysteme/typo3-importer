@@ -6,7 +6,7 @@
  */
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Importer',
-    'description' => '',
+    'description' => 'A TYPO3 extension which contains a failure safe framework for building structured import processes. It features a backend module and queue worker commands.',
     'category' => 'extensions',
     'constraints' => [
         'depends' => [
@@ -26,8 +26,7 @@ $EM_CONF[$_EXTKEY] = [
     'uploadfolder' => 0,
     'createDirs' => '',
     'clearCacheOnLoad' => 1,
-    'author' => 'Itx-Typo3-Team',
-    'author_email' => 'Patrick.Heinz@itx.de',
-    'author_company' => 'Itx',
-    'version' => '1.0.0',
+    'author' => 'it.x informationssysteme gmbh',
+    'author_email' => '',
+    'version' => '0.9.0',
 ];

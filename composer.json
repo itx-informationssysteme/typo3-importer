@@ -7,7 +7,7 @@
 			"email": "benjamin.jasper@itx.de"
 		}
 	],
-	"description" : "",
+	"description" : "A TYPO3 extension which contains a failure safe framework for building structured import processes.",
 	"homepage" : "https://www.itx.de/",
 	"license" : [
 		"GPL-2.0-or-later"
@@ -15,11 +15,22 @@
 	"keywords" : [
 		"TYPO3 CMS"
 	],
+	"support" : {
+		"email" : "typo-itx@itx.de",
+		"issues" : "https://github.com/itx-informationssysteme/typo3-importer/issues",
+		"docs" : "https://github.com/itx-informationssysteme/typo3-importer"
+	},
 	"require" : {
 		"typo3/cms-core" : "^11.5",
 		"typo3/cms-rte-ckeditor" : "^11.5",
 		"typo3/cms-fluid-styled-content" : "^11.5",
-		"symfony/serializer" : "^5.2"
+		"symfony/serializer" : "^5.2",
+		"typo3/cms-beuser" : "^11",
+		"typo3/cms-backend" : "^11",
+		"typo3/cms-scheduler" : "^11"
+	},
+	"require-dev" : {
+		"phpstan/phpstan" : "^1.4"
 	},
 	"autoload" : {
 		"psr-4" : {
@@ -28,7 +39,7 @@
 	},
 	"extra" : {
 		"typo3/cms" : {
-			"extension-key" : "importer"
+			"extension-key" : "typo3_importer"
 		}
 	}
 }

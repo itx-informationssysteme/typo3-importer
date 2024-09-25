@@ -1,5 +1,12 @@
 # Importer Extension
 
+This TYPO3 extension provides a failure tolerant structured import system for TYPO3 CMS.
+It provides a framework to create import jobs which, can be run in parallel.
+For every import there is a job queue that will be created by a producer class
+and consumed by a consumer class.
+The extension also provides a backend module to view and manage the imports,
+its jobs, statistics and potential failures.
+
 ## Usage
 
 ### Running the queue worker
