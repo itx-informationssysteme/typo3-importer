@@ -1,7 +1,7 @@
 <?php
 defined('TYPO3') or die('Access denied.');
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule('typo3_importer',
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule('importer',
                                                             'web',
                                                             'import_manager',
                                                             'bottom',
@@ -11,7 +11,7 @@ defined('TYPO3') or die('Access denied.');
                                                             [
                                                                 'access' => 'admin',
                                                                 'iconIdentifier' => 'importer-logo',
-                                                                'labels' => 'LLL:EXT:typo3_importer/Resources/Private/Language/locallang_be.xlf',
+                                                                'labels' => 'LLL:EXT:importer/Resources/Private/Language/locallang_be.xlf',
                                                                 'navigationComponentId' => '',
                                                                 'inheritNavigationComponentFromMainModule' => false,
                                                             ]);
