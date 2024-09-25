@@ -4,9 +4,9 @@
  * Extension Manager/Repository config file for ext "importer".
  * @phpstan-ignore-next-line
  */
-$EM_CONF['importer'] = [
+$EM_CONF[$_EXTKEY] = [
     'title' => 'Importer',
-    'description' => '',
+    'description' => 'A TYPO3 extension which contains a failure safe framework for building structured import processes. It features a backend module and queue worker commands.',
     'category' => 'extensions',
     'constraints' => [
         'depends' => [
@@ -26,8 +26,7 @@ $EM_CONF['importer'] = [
     'uploadfolder' => 0,
     'createDirs' => '',
     'clearCacheOnLoad' => 1,
-    'author' => 'Itx-Typo3-Team',
+    'author' => 'it.x informationssysteme gmbh',
     'author_email' => '',
-    'author_company' => 'Itx',
     'version' => '1.0.0',
 ];
