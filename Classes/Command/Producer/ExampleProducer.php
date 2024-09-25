@@ -16,7 +16,6 @@ class ExampleProducer extends AbstractJobProducer
 
     protected function isSourceAvailable(): bool
     {
-        throw new \Exception('Not implemented');
         return true;
     }
 

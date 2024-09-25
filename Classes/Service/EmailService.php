@@ -56,7 +56,7 @@ class EmailService
 
         //Get the users that should receive the email
         $users = $this->userRepository->findByimporterFailedNotification();
-        if (empty($users)) {
+        if (count($users) === 0) {
             return;
         }
 
