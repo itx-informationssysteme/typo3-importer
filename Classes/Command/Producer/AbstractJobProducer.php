@@ -8,6 +8,7 @@ use Itx\Importer\Domain\Model\Import;
 use Itx\Importer\Domain\Repository\ImportRepository;
 use Itx\Importer\Domain\Repository\JobRepository;
 use Itx\Importer\Payload\PayloadInterface;
+use Itx\Importer\Service\EmailService;
 use Itx\Importer\Service\JobQueueService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -27,12 +28,14 @@ abstract class AbstractJobProducer extends Command
 
     protected InputInterface $input;
 
-    public function __construct(ImportRepository          $importRepository,
-                                JobRepository             $jobRepository,
-                                PersistenceManager        $persistenceManager,
-                                LoggerInterface           $logger,
-                                protected JobQueueService $jobQueueService)
-    {
+    public function __construct(
+        ImportRepository $importRepository,
+        JobRepository $jobRepository,
+        PersistenceManager $persistenceManager,
+        LoggerInterface $logger,
+        protected JobQueueService $jobQueueService,
+        protected EmailService $emailService
+    ) {
         $this->importRepository = $importRepository;
         $this->jobRepository = $jobRepository;
         $this->persistenceManager = $persistenceManager;
@@ -60,15 +63,17 @@ abstract class AbstractJobProducer extends Command
             if (!$this->isSourceAvailable()) {
                 throw new \RuntimeException('Source is not available');
             }
-        }
-        catch (Exception $e) {
-            $this->logger->error("[PRODUCER][{type}] {message}, Trace: {trace}, Code: {code}",
-                                 [
-                                     'message' => $e->getMessage(),
-                                     'trace' => $e->getTraceAsString(),
-                                     'code' => $e->getCode(),
-                                     'type' => static::getImportType()
-                                 ]);
+        } catch (Exception $e) {
+            $this->emailService->sendSourceNotAvailableEmail(static::getImportLabel(), "Source not available: {$e->getMessage()}");
+            $this->logger->error(
+                '[PRODUCER][{type}] {message}, Trace: {trace}, Code: {code}',
+                [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                    'code' => $e->getCode(),
+                    'type' => static::getImportType(),
+                ]
+            );
 
             throw $e;
         }
@@ -76,19 +81,21 @@ abstract class AbstractJobProducer extends Command
         // Check if input with same type is already running
 
         if ($this->importRepository->countImportsWithStatus(static::getImportType(), Import::IMPORT_STATUS_RUNNING) > 0) {
-            $this->logger->notice("[PRODUCER][{type}] Import is already running -> skipping.",
-                                  ['type' => static::getImportType()]);
+            $this->logger->notice(
+                '[PRODUCER][{type}] Import is already running -> skipping.',
+                ['type' => static::getImportType()]
+            );
             $output->writeln('Import is already running. Skipping import.');
 
             return Command::FAILURE;
         }
 
-        $this->logger->info("[PRODUCER][{type}] Starting new import", ['type' => static::getImportType()]);
+        $this->logger->info('[PRODUCER][{type}] Starting new import', ['type' => static::getImportType()]);
 
         // check if there are jobs -> if no jobs are found, do not create import record
         $jobs = $this->generateJobs();
         if (!$jobs->current()) {
-            $this->logger->notice("[PRODUCER][{type}] No jobs found -> skipping.", ['type' => static::getImportType()]);
+            $this->logger->notice('[PRODUCER][{type}] No jobs found -> skipping.', ['type' => static::getImportType()]);
 
             return Command::FAILURE;
         }
@@ -120,8 +127,10 @@ abstract class AbstractJobProducer extends Command
 
         $this->persistenceManager->persistAll();
 
-        $this->logger->info("[PRODUCER][{type}] Created {count} initial jobs for import",
-                            ['type' => static::getImportType(), 'count' => $jobCounter]);
+        $this->logger->info(
+            '[PRODUCER][{type}] Created {count} initial jobs for import',
+            ['type' => static::getImportType(), 'count' => $jobCounter]
+        );
 
         return Command::SUCCESS;
     }
@@ -160,7 +169,6 @@ abstract class AbstractJobProducer extends Command
     /**
      * @return bool True if the source is available, false otherwise, can also throw an exception to indicate what went wrong
      * @throws Exception
-     *
      */
     abstract protected function isSourceAvailable(): bool;
 
