@@ -40,7 +40,7 @@
 	},
 	"extra" : {
 		"typo3/cms" : {
-			"extension-key" : "typo3_importer"
+			"extension-key" : "importer"
 		}
 	}
 }
