@@ -23,9 +23,14 @@ class ExampleConsumer implements ConsumerInterface
         $lock = $this->lockingService->createLock('example');
         $lock->acquire(true);
         echo 'Running job with payload: ' . $payload->property1 . ' ' . $payload->property2 . PHP_EOL;
-        sleep(6);
+        ob_flush();
+        sleep(3);
 
         $lock->release();
+
+        if (rand(0, 100) > 80) {
+            throw new \Exception('Random example exception!');
+        }
 
         return [];
     }
