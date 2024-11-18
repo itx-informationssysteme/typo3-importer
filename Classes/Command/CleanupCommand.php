@@ -31,7 +31,7 @@ class CleanupCommand extends Command
             ->setDescription('Cleanup the database')->addArgument('numberToKeep', InputArgument::OPTIONAL, 'Number to keep', 10);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $numberToKeep = (int)$input->getArgument('numberToKeep');
         if ($numberToKeep < 1) {
