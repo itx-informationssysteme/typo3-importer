@@ -136,7 +136,7 @@ class ImportController extends ActionController
                                         'importName' => $this->importProducer[$importType]::getImportLabel(),
                                     ]);
 
-        return $moduleTemplate->renderResponse('ListAll');
+        return $moduleTemplate->renderResponse('Import/ListAll');
     }
 
     /**
@@ -210,7 +210,7 @@ class ImportController extends ActionController
         $moduleTemplate->assign('jobPagination', $jobPagination);
         $moduleTemplate->assign('jobs', $jobPaginator->getPaginatedItems());
 
-        return $moduleTemplate->renderResponse('Show');
+        return $moduleTemplate->renderResponse('Import/Show');
     }
 
     public function fetchSchedulerTasks()
