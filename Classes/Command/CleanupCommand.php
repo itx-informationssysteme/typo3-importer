@@ -12,16 +12,21 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use Itx\Importer\Service\ConfigurationLoaderService;
 
 class CleanupCommand extends Command
 {
+    protected ConfigurationLoaderService $configurationLoaderService;
+
     public function __construct(
         protected iterable $producers,
         protected ImportRepository $importRepository,
         protected JobRepository $jobRepository,
         protected PersistenceManager $persistenceManager,
-        protected StatisticRepository $statisticRepository
+        protected StatisticRepository $statisticRepository,
+        ConfigurationLoaderService $configurationLoaderService
     ) {
+        $this->configurationLoaderService = $configurationLoaderService;
         parent::__construct();
     }
 
@@ -33,6 +38,7 @@ class CleanupCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->configurationLoaderService->initCliEnvironment();
         $numberToKeep = (int)$input->getArgument('numberToKeep');
         if ($numberToKeep < 1) {
             $output->writeln('Number to keep must be greater than 0');

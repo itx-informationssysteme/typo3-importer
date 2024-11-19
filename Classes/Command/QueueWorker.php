@@ -34,6 +34,7 @@ use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use Itx\Importer\Service\ConfigurationLoaderService;
 
 #[Channel('import')]
 class QueueWorker extends \Symfony\Component\Console\Command\Command
@@ -42,6 +43,7 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
     protected int $processId;
     protected string $logPrefix = '';
 
+    protected ConfigurationLoaderService $configurationLoaderService;
     protected JobRepository $jobRepository;
     protected PersistenceManager $persistenceManager;
     protected LoggerInterface $logger;
@@ -66,6 +68,7 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
     public function __construct(
         iterable $consumers,
         iterable $producers,
+        ConfigurationLoaderService $configurationLoaderService,
         JobRepository $jobRepository,
         PersistenceManager $persistenceManager,
         LoggerInterface $logger,
@@ -74,6 +77,7 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
         protected JobQueueService $jobQueueService,
         protected EmailService $emailService
     ) {
+        $this->configurationLoaderService = $configurationLoaderService;
         $this->jobRepository = $jobRepository;
         $this->persistenceManager = $persistenceManager;
         $this->logger = $logger;
@@ -188,6 +192,7 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->configurationLoaderService->initCliEnvironment();
         $maxJobs = (int)$input->getArgument('maxJobs');
         $waitingTime = (int)$input->getArgument('waitingTime');
         $timeout = (int)$input->getArgument('timeout');
