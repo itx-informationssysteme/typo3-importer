@@ -40,7 +40,7 @@ class StatisticRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                                         \PDO::PARAM_INT
                                     )
                                 ))
-                               ->execute();
+                               ->executeStatement();
 
         return $result;
     }

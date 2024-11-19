@@ -10,6 +10,7 @@ use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Repository;
+use TYPO3\CMS\Core\Database\Connection;
 
 class JobRepository extends Repository
 {
@@ -57,8 +58,8 @@ class JobRepository extends Repository
                                    )
                                )
                                ->set('status', Job::STATUS_RUNNING)
-                               ->set('start_time', time(), true, \PDO::PARAM_INT)
-                               ->execute();
+                               ->set('start_time', time(), true, Connection::PARAM_INT)
+                               ->executeStatement();
 
         // If the update was not successful, the job was already acquired by another process
         if ($result === 0) {
@@ -87,8 +88,8 @@ class JobRepository extends Repository
                                    )
                                ))
                                ->set('status', Job::STATUS_QUEUED)
-                               ->set('sorting', $job->getSorting() + 30, true, \PDO::PARAM_INT)
-                               ->execute();
+                               ->set('sorting', $job->getSorting() + 30, true, Connection::PARAM_INT)
+                               ->executeStatement();
 
         if ($result === 0) {
             throw new \RuntimeException('Could not reinsert job ' . $job->getUid() . ' into queue', 1622020001);
@@ -247,7 +248,7 @@ class JobRepository extends Repository
                                        \PDO::PARAM_INT
                                    )
                                ))
-                               ->execute();
+                               ->executeStatement();
         return $result;
     }
 }
