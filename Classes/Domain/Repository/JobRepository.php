@@ -3,6 +3,7 @@
 namespace Itx\Importer\Domain\Repository;
 
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\ParameterType;
 use Itx\Importer\Domain\Model\Import;
 use Itx\Importer\Domain\Model\Job;
 use Itx\Importer\Exception\JobAlreadyGoneException;
@@ -10,7 +11,6 @@ use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Repository;
-use TYPO3\CMS\Core\Database\Connection;
 
 class JobRepository extends Repository
 {
@@ -49,7 +49,7 @@ class JobRepository extends Repository
                                        'uid',
                                        $queryBuilder->createNamedParameter(
                                            $job->getUid(),
-                                           \PDO::PARAM_INT
+                                           ParameterType::INTEGER
                                        )
                                    ),
                                    $queryBuilder->expr()->eq(
@@ -58,7 +58,7 @@ class JobRepository extends Repository
                                    )
                                )
                                ->set('status', Job::STATUS_RUNNING)
-                               ->set('start_time', time(), true, Connection::PARAM_INT)
+                               ->set('start_time', time(), true, ParameterType::INTEGER)
                                ->executeStatement();
 
         // If the update was not successful, the job was already acquired by another process
@@ -88,7 +88,7 @@ class JobRepository extends Repository
                                    )
                                ))
                                ->set('status', Job::STATUS_QUEUED)
-                               ->set('sorting', $job->getSorting() + 30, true, Connection::PARAM_INT)
+                               ->set('sorting', $job->getSorting() + 30, true, ParameterType::INTEGER)
                                ->executeStatement();
 
         if ($result === 0) {
