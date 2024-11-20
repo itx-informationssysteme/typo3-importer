@@ -2,6 +2,7 @@
 
 namespace Itx\Importer\Domain\Repository;
 
+use Doctrine\DBAL\ParameterType;
 use Itx\Importer\Domain\Model\Import;
 use Itx\Importer\Domain\Model\Statistic;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -37,7 +38,7 @@ class StatisticRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                                     'import',
                                     $queryBuilder->createNamedParameter(
                                         $import->getUid(),
-                                        \PDO::PARAM_INT
+                                        ParameterType::INTEGER
                                     )
                                 ))
                                ->executeStatement();

@@ -84,7 +84,7 @@ class JobRepository extends Repository
                                    'uid',
                                    $queryBuilder->createNamedParameter(
                                        $job->getUid(),
-                                       \PDO::PARAM_INT
+                                       ParameterType::INTEGER
                                    )
                                ))
                                ->set('status', Job::STATUS_QUEUED)
@@ -245,7 +245,7 @@ class JobRepository extends Repository
                                    'import',
                                    $queryBuilder->createNamedParameter(
                                        $import->getUid(),
-                                       \PDO::PARAM_INT
+                                       ParameterType::INTEGER
                                    )
                                ))
                                ->executeStatement();
