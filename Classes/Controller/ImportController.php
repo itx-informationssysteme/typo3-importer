@@ -24,6 +24,8 @@ use TYPO3\CMS\Frontend\Controller\ErrorController;
 use TYPO3\CMS\Scheduler\Scheduler;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\ExecuteSchedulableCommandTask;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 
 class ImportController extends ActionController
 {
@@ -47,8 +49,8 @@ class ImportController extends ActionController
             $this->importProducer[$producer::getImportType()] = $producer;
         }
 
-        // Find the producer scheduler task to get the last execution time and the next execution time
-        $tasks = $this->scheduler->fetchTasksWithCondition('', true);
+        // Find the producer scheduler task to get the last execution time and the next execution time     
+        $tasks = $this->fetchSchedulerTasks();
 
         /** @var AbstractTask $task */
         foreach ($tasks as $task) {
@@ -108,7 +110,7 @@ class ImportController extends ActionController
         $moduleTemplate->assign('importGroups', $importTypes);
         $moduleTemplate->assign('itemsPerGroup', self::ITEMS_PER_PAGE_LIST_GROUP);
 
-        return $moduleTemplate->renderResponse('List');
+        return $moduleTemplate->renderResponse('Import/List');
 
     }
 
@@ -134,7 +136,7 @@ class ImportController extends ActionController
                                         'importName' => $this->importProducer[$importType]::getImportLabel(),
                                     ]);
 
-        return $moduleTemplate->renderResponse('ListAll');
+        return $moduleTemplate->renderResponse('Import/ListAll');
     }
 
     /**
@@ -208,6 +210,38 @@ class ImportController extends ActionController
         $moduleTemplate->assign('jobPagination', $jobPagination);
         $moduleTemplate->assign('jobs', $jobPaginator->getPaginatedItems());
 
-        return $moduleTemplate->renderResponse('Show');
+        return $moduleTemplate->renderResponse('Import/Show');
+    }
+
+    public function fetchSchedulerTasks()
+    {
+        $tasks = [];
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_scheduler_task');
+
+        $queryBuilder
+            ->select('serialized_task_object')
+            ->from('tx_scheduler_task')
+            ->where(
+                $queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
+            );
+
+        $result = $queryBuilder->executeQuery();
+        while ($row = $result->fetchAssociative()) {
+            /** @var Task\AbstractTask $task */
+            $task = unserialize($row['serialized_task_object']);
+            // Add the task to the list only if it is valid
+            if ($this->isValidTaskObject($task)) {
+                $task->setScheduler();
+                $tasks[] = $task;
+            }
+        }
+
+        return $tasks;
+    }
+
+    public function isValidTaskObject($task)
+    {
+        return $task instanceof AbstractTask && get_class($task->getExecution()) !== \__PHP_Incomplete_Class::class;
     }
 }

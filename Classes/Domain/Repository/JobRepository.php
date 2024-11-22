@@ -3,6 +3,7 @@
 namespace Itx\Importer\Domain\Repository;
 
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\ParameterType;
 use Itx\Importer\Domain\Model\Import;
 use Itx\Importer\Domain\Model\Job;
 use Itx\Importer\Exception\JobAlreadyGoneException;
@@ -48,7 +49,7 @@ class JobRepository extends Repository
                                        'uid',
                                        $queryBuilder->createNamedParameter(
                                            $job->getUid(),
-                                           \PDO::PARAM_INT
+                                           ParameterType::INTEGER
                                        )
                                    ),
                                    $queryBuilder->expr()->eq(
@@ -57,8 +58,8 @@ class JobRepository extends Repository
                                    )
                                )
                                ->set('status', Job::STATUS_RUNNING)
-                               ->set('start_time', time(), true, \PDO::PARAM_INT)
-                               ->execute();
+                               ->set('start_time', time(), true, ParameterType::INTEGER)
+                               ->executeStatement();
 
         // If the update was not successful, the job was already acquired by another process
         if ($result === 0) {
@@ -83,12 +84,12 @@ class JobRepository extends Repository
                                    'uid',
                                    $queryBuilder->createNamedParameter(
                                        $job->getUid(),
-                                       \PDO::PARAM_INT
+                                       ParameterType::INTEGER
                                    )
                                ))
                                ->set('status', Job::STATUS_QUEUED)
-                               ->set('sorting', $job->getSorting() + 30, true, \PDO::PARAM_INT)
-                               ->execute();
+                               ->set('sorting', $job->getSorting() + 30, true, ParameterType::INTEGER)
+                               ->executeStatement();
 
         if ($result === 0) {
             throw new \RuntimeException('Could not reinsert job ' . $job->getUid() . ' into queue', 1622020001);
@@ -244,10 +245,10 @@ class JobRepository extends Repository
                                    'import',
                                    $queryBuilder->createNamedParameter(
                                        $import->getUid(),
-                                       \PDO::PARAM_INT
+                                       ParameterType::INTEGER
                                    )
                                ))
-                               ->execute();
+                               ->executeStatement();
         return $result;
     }
 }

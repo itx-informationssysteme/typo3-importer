@@ -10,7 +10,7 @@ return [
         'workspaces' => 'live',
         'path' => '/module/importer',
         'labels' => 'LLL:EXT:importer/Resources/Private/Language/locallang_be.xlf',
-        'icon' => 'EXT:importer/Resources/Public/Icons/logo.svg',
+        'icon' => 'EXT:importer/Resources/Public/Icons/Extension.svg',
         'extensionName' => 'Importer',
         'controllerActions' => [
             ImportController::class => [

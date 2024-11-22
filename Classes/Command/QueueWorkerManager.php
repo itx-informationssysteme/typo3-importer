@@ -9,17 +9,25 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Core\Environment;
+use Itx\Importer\Service\ConfigurationLoaderService;
 
 class QueueWorkerManager extends Command
 {
+    protected ConfigurationLoaderService $configurationLoaderService;
+
     protected function configure(): void
     {
         $this->addArgument('workerCount', InputArgument::OPTIONAL, 'Number of workers to start', 4);
         $this->addArgument('maxJobs', InputArgument::OPTIONAL, 'Maximum jobs per worker, before it stops', 100);
     }
 
-    public function __construct(protected JobRepository $jobRepository, string $name = null)
+    public function __construct(
+        ConfigurationLoaderService $configurationLoaderService,
+        protected JobRepository $jobRepository, 
+        string $name = null,
+    )
     {
+        $this->configurationLoaderService = $configurationLoaderService;
         parent::__construct($name);
     }
 
@@ -28,6 +36,7 @@ class QueueWorkerManager extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->configurationLoaderService->initCliEnvironment();
         $workerCount = (int)$input->getArgument('workerCount');
         $maxJobs = (int)$input->getArgument('maxJobs');
         $consolePath = Environment::getProjectPath() . '/vendor/bin/typo3';

@@ -17,10 +17,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Log\Channel;
 use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use Itx\Importer\Service\ConfigurationLoaderService;
 
 #[Channel('import')]
 abstract class AbstractJobProducer extends Command
 {
+    protected ConfigurationLoaderService $configurationLoaderService;
     protected ImportRepository $importRepository;
     protected JobRepository $jobRepository;
     protected PersistenceManager $persistenceManager;
@@ -29,6 +31,7 @@ abstract class AbstractJobProducer extends Command
     protected InputInterface $input;
 
     public function __construct(
+        ConfigurationLoaderService $configurationLoaderService,
         ImportRepository $importRepository,
         JobRepository $jobRepository,
         PersistenceManager $persistenceManager,
@@ -36,6 +39,7 @@ abstract class AbstractJobProducer extends Command
         protected JobQueueService $jobQueueService,
         protected EmailService $emailService
     ) {
+        $this->configurationLoaderService = $configurationLoaderService;
         $this->importRepository = $importRepository;
         $this->jobRepository = $jobRepository;
         $this->persistenceManager = $persistenceManager;
@@ -57,6 +61,8 @@ abstract class AbstractJobProducer extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->configurationLoaderService->initCliEnvironment();
+
         // save input so it can be used by concrete producers
         $this->setInput($input);
         try {
