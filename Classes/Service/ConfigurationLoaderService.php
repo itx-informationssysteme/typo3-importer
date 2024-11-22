@@ -23,7 +23,13 @@ class ConfigurationLoaderService
         $this->classesConfigurationFactory = $classesConfigurationFactory;
         $this->configurationManager = $configurationManager;
     }
-
+    
+    /*
+     * Issue:   Since TYPO3 v13, you can't directly call an extbase repository from a command
+     *          anymore, so you have to manually load the ConfigurationManager with this
+     *          workaround
+     * Link:    https://forge.typo3.org/issues/105616  
+     */ 
     public function initCliEnvironment(): void
     {
         if (PHP_SAPI === 'cli') {

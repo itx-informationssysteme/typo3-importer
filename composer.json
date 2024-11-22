@@ -22,12 +22,12 @@
 	},
 	"require" : {
 		"php" : ">=8.1",
-		"typo3/cms-core" : "^12 || ^13",
-		"typo3/cms-rte-ckeditor" : "^12 || ^13",
-		"typo3/cms-fluid-styled-content" : "^12 || ^13",
-		"typo3/cms-beuser" : "^12 || ^13",
-		"typo3/cms-backend" : "^12 || ^13",
-		"typo3/cms-scheduler" : "^12 || ^13",
+		"typo3/cms-core" : "^13",
+		"typo3/cms-rte-ckeditor" : "^13",
+		"typo3/cms-fluid-styled-content" : "^13",
+		"typo3/cms-beuser" : "^13",
+		"typo3/cms-backend" : "^13",
+		"typo3/cms-scheduler" : "^13",
 		"symfony/serializer" : "^6"
 	},
 	"require-dev" : {
