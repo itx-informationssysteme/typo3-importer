@@ -24,6 +24,8 @@ class Job extends \TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject
     protected string $payload = "";
     protected string $failureReason = "";
     protected Import $import;
+    protected int $retryCount = 0;
+
 
     public function __construct() {
         $this->startTime = new DateTime();
@@ -172,5 +174,21 @@ class Job extends \TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject
     public function setFailureReason(string $failureReason): void
     {
         $this->failureReason = $failureReason;
+    }
+
+    /**
+     * @return int $retryCount
+     */
+    public function getRetryCount(): int
+    {
+        return $this->retryCount;
+    }
+
+    /**
+     * @param int $retryCount
+     */
+    public function setRetryCount(int $retryCount): void
+    {
+        $this->retryCount = $retryCount;
     }
 }

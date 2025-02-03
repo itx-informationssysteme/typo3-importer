@@ -12,6 +12,7 @@ CREATE TABLE tx_importer_domain_model_job
 	payload_type   varchar(255) DEFAULT ''  NOT NULL,
 	failure_reason text,
 	import         int(11)      DEFAULT '0' NOT NULL,
+	retry_count    int(11)      DEFAULT '0' NOT NULL,
 	INDEX status (status),
 	INDEX import (import),
 	INDEX sorting (sorting)
