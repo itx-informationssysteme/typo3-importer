@@ -175,6 +175,26 @@ class JobRepository extends Repository
         return $query->execute();
     }
 
+    /**
+     * @throws InvalidQueryException
+     */
+    public function findJobsForRetry(Import $import, int $maxRetry): Traversable
+    {
+        $query = $this->createQuery();
+
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $query->getQuerySettings()->setRespectSysLanguage(false);
+
+        $query->matching($query->logicalAnd(
+            $query->equals('status', Job::STATUS_FAILED),
+            $query->equals('isFinisher', false),
+            $query->equals('import', $import->getUid()),
+            $query->lessThan('retryCount', $maxRetry)
+        ));
+
+        return $query->execute();
+    }
+
     public function countFailedJobsByImport(int $importUid): int
     {
         $query = $this->createQuery();

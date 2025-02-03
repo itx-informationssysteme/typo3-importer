@@ -7,7 +7,6 @@ use Doctrine\DBAL\DBALException;
 use Exception;
 use Itx\Importer\Command\Producer\AbstractJobProducer;
 use Itx\Importer\Consumer\ConsumerInterface;
-use Itx\Importer\Controller\ImportController;
 use Itx\Importer\Domain\Model\Import;
 use Itx\Importer\Domain\Model\Job;
 use Itx\Importer\Domain\Repository\ImportRepository;
@@ -39,6 +38,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 class QueueWorker extends \Symfony\Component\Console\Command\Command
 {
     public const JOB_TIMEOUT = 180;
+    public const MAX_RETRIES = 3;
     protected int $processId;
     protected string $logPrefix = '';
 
@@ -48,8 +48,8 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
     protected Serializer $serializer;
     protected ImportRepository $importRepository;
     protected UriBuilder $uriBuilder;
-
     protected ImportController $importController;
+    protected Request $request;
 
     /** @var array<string, ConsumerInterface> */
     protected array $consumerPayloadMap = [];
@@ -337,6 +337,16 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
             $this->jobRepository->update($timeoutJob);
         }
 
+        $this->persistenceManager->persistAll();
+
+        // Retry failed jobs
+        foreach ($this->jobRepository->findJobsForRetry($job->getImport(), self::MAX_RETRIES) as $retryJob) {
+            $this->logger->info($this->logPrefix . " Retrying job {$retryJob->getUid()}");
+            $retryJob->setStatus(Job::STATUS_QUEUED);
+            $retryJob->setFailureReason('');
+            $retryJob->setRetryCount($retryJob->getRetryCount() + 1);
+            $this->jobRepository->update($retryJob);
+        }
         $this->persistenceManager->persistAll();
 
         // Count all jobs that are not completed yet
