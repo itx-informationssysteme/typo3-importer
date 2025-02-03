@@ -88,6 +88,14 @@ return [
                 'maxitems' => 1,
             ],
         ],
+        'retry_count' => [
+            'exclude' => true,
+            'label' => 'Retry Count',
+            'config' => [
+                'type' => 'input',
+                'eval' => 'int',
+            ],
+        ],
         'start_time' => [
             'exclude' => true,
             'label' => 'Starttime',
@@ -158,6 +166,6 @@ return [
         ]
     ],
     'types' => [
-        0 => ['showitem' => 'sys_language_uid, l10n_parent, hidden, start_time, end_time, is_finisher, status, payload, payload_type, sorting'],
+        0 => ['showitem' => 'sys_language_uid, l10n_parent, hidden, start_time, end_time, is_finisher, status, payload, payload_type, sorting, retry_count, import, import_type, failure_reason'],
     ],
 ];
