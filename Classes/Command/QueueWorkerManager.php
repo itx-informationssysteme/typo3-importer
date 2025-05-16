@@ -18,7 +18,7 @@ class QueueWorkerManager extends Command
         $this->addArgument('maxJobs', InputArgument::OPTIONAL, 'Maximum jobs per worker, before it stops', 100);
     }
 
-    public function __construct(protected JobRepository $jobRepository, string $name = null)
+    public function __construct(protected JobRepository $jobRepository, ?string $name = null)
     {
         parent::__construct($name);
     }
