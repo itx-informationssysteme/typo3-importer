@@ -8,6 +8,7 @@ use Itx\Importer\Domain\Model\Import;
 use Itx\Importer\Domain\Repository\ImportRepository;
 use Itx\Importer\Domain\Repository\JobRepository;
 use Itx\Importer\Payload\PayloadInterface;
+use Itx\Importer\Service\ConfigurationLoaderService;
 use Itx\Importer\Service\EmailService;
 use Itx\Importer\Service\JobQueueService;
 use Psr\Log\LoggerInterface;
@@ -17,7 +18,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Log\Channel;
 use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use Itx\Importer\Service\ConfigurationLoaderService;
 
 #[Channel('import')]
 abstract class AbstractJobProducer extends Command
@@ -57,7 +57,7 @@ abstract class AbstractJobProducer extends Command
 
     /**
      * @throws IllegalObjectTypeException
-     * @throws Exception
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -69,7 +69,7 @@ abstract class AbstractJobProducer extends Command
             if (!$this->isSourceAvailable()) {
                 throw new \RuntimeException('Source is not available');
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->emailService->sendSourceNotAvailableEmail(static::getImportLabel(), "Source not available: {$e->getMessage()}");
             $this->logger->error(
                 '[PRODUCER][{type}] {message}, Trace: {trace}, Code: {code}',
@@ -174,14 +174,14 @@ abstract class AbstractJobProducer extends Command
 
     /**
      * @return bool True if the source is available, false otherwise, can also throw an exception to indicate what went wrong
-     * @throws Exception
+     * @throws \Exception
      */
     abstract protected function isSourceAvailable(): bool;
 
     /**
      * Function that return a generator that yields PayloadInterface objects. These Payloads will be used to create jobs.
      *
-     * @return Generator<PayloadInterface>
+     * @return \Generator<PayloadInterface>
      */
-    abstract protected function generateJobs(): Generator;
+    abstract protected function generateJobs(): \Generator;
 }

@@ -8,9 +8,10 @@ use Itx\Importer\Domain\Model\Job;
 use Itx\Importer\Domain\Repository\ImportRepository;
 use Itx\Importer\Domain\Repository\JobRepository;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
@@ -24,8 +25,6 @@ use TYPO3\CMS\Frontend\Controller\ErrorController;
 use TYPO3\CMS\Scheduler\Scheduler;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\ExecuteSchedulableCommandTask;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 
 class ImportController extends ActionController
 {
@@ -39,17 +38,18 @@ class ImportController extends ActionController
     /** @var array<string,ExecuteSchedulableCommandTask> */
     protected array $schedulerTasks;
 
-    public function __construct(iterable                        $producers,
-                                protected ModuleTemplateFactory $moduleTemplateFactory,
-                                protected ImportRepository      $importRepository,
-                                protected JobRepository         $jobRepository,
-                                protected Scheduler             $scheduler)
-    {
+    public function __construct(
+        iterable $producers,
+        protected ModuleTemplateFactory $moduleTemplateFactory,
+        protected ImportRepository $importRepository,
+        protected JobRepository $jobRepository,
+        protected Scheduler $scheduler
+    ) {
         foreach ($producers as $producer) {
             $this->importProducer[$producer::getImportType()] = $producer;
         }
 
-        // Find the producer scheduler task to get the last execution time and the next execution time     
+        // Find the producer scheduler task to get the last execution time and the next execution time
         $tasks = $this->fetchSchedulerTasks();
 
         /** @var AbstractTask $task */
@@ -129,12 +129,12 @@ class ImportController extends ActionController
         $pagination = new SimplePagination($paginator);
 
         $moduleTemplate->assignMultiple([
-                                        'imports' => $paginator->getPaginatedItems(),
-                                        'pagination' => $pagination,
-                                        'paginator' => $paginator,
-                                        'importType' => $importType,
-                                        'importName' => $this->importProducer[$importType]::getImportLabel(),
-                                    ]);
+            'imports' => $paginator->getPaginatedItems(),
+            'pagination' => $pagination,
+            'paginator' => $paginator,
+            'importType' => $importType,
+            'importName' => $this->importProducer[$importType]::getImportLabel(),
+        ]);
 
         return $moduleTemplate->renderResponse('Import/ListAll');
     }
@@ -194,9 +194,11 @@ class ImportController extends ActionController
             $progress = round(($totalJobs - $jobsToProcess) / $totalJobs * 100);
         }
 
-        $jobPaginator = new QueryResultPaginator($this->jobRepository->findByImportAndStatus($import, Job::STATUS_FAILED),
-                                                 $page,
-                                                 self::ITEMS_PER_PAGE_JOBS_DETAIL);
+        $jobPaginator = new QueryResultPaginator(
+            $this->jobRepository->findByImportAndStatus($import, Job::STATUS_FAILED),
+            $page,
+            self::ITEMS_PER_PAGE_JOBS_DETAIL
+        );
         $jobPagination = new SimplePagination($jobPaginator);
 
         $moduleTemplate->assign('import', $import);

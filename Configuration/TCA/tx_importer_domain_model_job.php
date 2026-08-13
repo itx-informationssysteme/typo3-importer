@@ -155,7 +155,7 @@ return [
                 'type' => 'input',
                 'eval' => 'int',
             ],
-        ]
+        ],
     ],
     'types' => [
         0 => ['showitem' => 'sys_language_uid, l10n_parent, hidden, start_time, end_time, is_finisher, status, payload, payload_type, sorting'],

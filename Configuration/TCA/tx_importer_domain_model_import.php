@@ -171,7 +171,7 @@ return [
                 ],
                 'readOnly' => true,
             ],
-        ]
+        ],
     ],
     'types' => [
         0 => ['showitem' => 'sys_language_uid, l10n_parent, hidden, import_type, status, start_time, end_time, failed_jobs, completed_jobs, total_jobs, statistics'],

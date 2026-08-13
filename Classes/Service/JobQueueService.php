@@ -29,7 +29,6 @@ class JobQueueService
      * @param Import $import
      * @param mixed  $payload
      *
-     * @return void
      * @throws IllegalObjectTypeException
      */
     public function addJob(Import $import, mixed $payload): void

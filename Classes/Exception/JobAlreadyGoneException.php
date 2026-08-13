@@ -2,7 +2,4 @@
 
 namespace Itx\Importer\Exception;
 
-class JobAlreadyGoneException extends \Exception
-{
-
-}
+class JobAlreadyGoneException extends \Exception {}

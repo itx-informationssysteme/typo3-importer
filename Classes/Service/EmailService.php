@@ -2,7 +2,6 @@
 
 namespace Itx\Importer\Service;
 
-use Exception;
 use Itx\Importer\Domain\Model\Import;
 use Itx\Importer\Domain\Repository\BackendUserRepository;
 use Psr\Log\LoggerInterface;
@@ -112,7 +111,7 @@ class EmailService
 
         try {
             $mailer->send($email);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->error(
                 $logPrefix . ' Failed to send email for failed import',
                 [

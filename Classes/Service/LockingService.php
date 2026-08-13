@@ -24,6 +24,6 @@ class LockingService
      */
     public function createLock(string $key): LockingStrategyInterface
     {
-        return $this->lockFactory->createLocker('importer-'.$key, LockingStrategyInterface::LOCK_CAPABILITY_EXCLUSIVE);
+        return $this->lockFactory->createLocker('importer-' . $key, LockingStrategyInterface::LOCK_CAPABILITY_EXCLUSIVE);
     }
 }

@@ -7,7 +7,6 @@ use Doctrine\DBAL\ParameterType;
 use Itx\Importer\Domain\Model\Import;
 use Itx\Importer\Domain\Model\Job;
 use Itx\Importer\Exception\JobAlreadyGoneException;
-use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -156,10 +155,10 @@ class JobRepository extends Repository
      * @param int    $timeout Timeout in seconds
      * @param Import $import
      *
-     * @return Traversable<Job>
+     * @return \Traversable<Job>
      * @throws InvalidQueryException
      */
-    public function findJobsThatExceededTimeout(int $timeout, Import $import): Traversable
+    public function findJobsThatExceededTimeout(int $timeout, Import $import): \Traversable
     {
         $query = $this->createQuery();
 

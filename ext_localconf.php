@@ -9,8 +9,8 @@ defined('TYPO3') or die('Access denied.');
 $GLOBALS['TYPO3_CONF_VARS']['LOG']['import']['writerConfiguration'] = [
     LogLevel::DEBUG => [
         FileWriter::class => [
-            'logFile' => Environment::getVarPath() . '/log/import.log'
-        ]
+            'logFile' => Environment::getVarPath() . '/log/import.log',
+        ],
     ],
 ];
 

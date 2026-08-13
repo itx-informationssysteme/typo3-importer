@@ -2,8 +2,6 @@
 
 namespace Itx\Importer\Domain\Model;
 
-
-
 class BackendUser extends \TYPO3\CMS\Beuser\Domain\Model\BackendUser
 {
     protected bool $importerFailedNotification;
