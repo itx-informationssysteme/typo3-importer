@@ -2,7 +2,4 @@
 
 namespace Itx\Importer\Payload;
 
-interface PayloadInterface
-{
-
-}
+interface PayloadInterface {}

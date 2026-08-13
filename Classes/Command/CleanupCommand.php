@@ -7,12 +7,12 @@ use Itx\Importer\Domain\Model\Import;
 use Itx\Importer\Domain\Repository\ImportRepository;
 use Itx\Importer\Domain\Repository\JobRepository;
 use Itx\Importer\Domain\Repository\StatisticRepository;
+use Itx\Importer\Service\ConfigurationLoaderService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use Itx\Importer\Service\ConfigurationLoaderService;
 
 class CleanupCommand extends Command
 {

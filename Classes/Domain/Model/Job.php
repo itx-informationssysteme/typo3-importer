@@ -2,8 +2,6 @@
 
 namespace Itx\Importer\Domain\Model;
 
-use DateTime;
-
 class Job extends \TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject
 {
     public const STATUS_QUEUED = 'queued';
@@ -12,52 +10,53 @@ class Job extends \TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject
     public const STATUS_COMPLETED = 'completed';
 
     protected int $sorting = 0;
-    protected DateTime $startTime;
-    protected DateTime $endTime;
+    protected \DateTime $startTime;
+    protected \DateTime $endTime;
     protected bool $isFinisher = false;
 
     /** @var string
      * Can have the following values = ['queued', 'running', 'completed', 'failed']
      */
     protected string $status = 'queued';
-    protected string $payloadType = "";
-    protected string $payload = "";
-    protected string $failureReason = "";
+    protected string $payloadType = '';
+    protected string $payload = '';
+    protected string $failureReason = '';
     protected Import $import;
 
-    public function __construct() {
-        $this->startTime = new DateTime();
-        $this->endTime = new DateTime();
+    public function __construct()
+    {
+        $this->startTime = new \DateTime();
+        $this->endTime = new \DateTime();
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
-    public function getStartTime(): DateTime
+    public function getStartTime(): \DateTime
     {
         return $this->startTime;
     }
 
     /**
-     * @param DateTime $startTime
+     * @param \DateTime $startTime
      */
-    public function setStartTime(DateTime $startTime): void
+    public function setStartTime(\DateTime $startTime): void
     {
         $this->startTime = $startTime;
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
-    public function getEndTime(): DateTime
+    public function getEndTime(): \DateTime
     {
         return $this->endTime;
     }
 
     /**
-     * @param DateTime $endTime
+     * @param \DateTime $endTime
      */
-    public function setEndTime(DateTime $endTime): void
+    public function setEndTime(\DateTime $endTime): void
     {
         $this->endTime = $endTime;
     }

@@ -161,7 +161,7 @@ return [
                 'foreign_table' => 'tx_importer_domain_model_import',
                 'default' => 0,
             ],
-        ]
+        ],
     ],
     'types' => [
         0 => ['showitem' => 'sys_language_uid, l10n_parent, hidden, start_time, end_time, record_name, record_table, number_added, number_updated, number_deleted, number_unchanged, import'],

@@ -20,12 +20,12 @@ class StatisticsService
      */
     protected array $locks = [];
 
-    public function __construct(protected LockingService      $lockingService,
-                                protected StatisticRepository $statisticRepository,
-                                protected ImportRepository    $importRepository,
-                                protected PersistenceManager  $persistenceManager)
-    {
-    }
+    public function __construct(
+        protected LockingService $lockingService,
+        protected StatisticRepository $statisticRepository,
+        protected ImportRepository $importRepository,
+        protected PersistenceManager $persistenceManager
+    ) {}
 
     private function getLockOrCreate(string $name): LockingStrategyInterface
     {
@@ -51,14 +51,15 @@ class StatisticsService
      * @throws LockAcquireWouldBlockException
      * @throws LockCreateException
      */
-    public function addStatistic(string $recordName,
-                                 string $tableName,
-                                 Import $import,
-                                 int    $added,
-                                 int    $updated,
-                                 int    $deleted,
-                                 int    $unchanged): void
-    {
+    public function addStatistic(
+        string $recordName,
+        string $tableName,
+        Import $import,
+        int $added,
+        int $updated,
+        int $deleted,
+        int $unchanged
+    ): void {
         $importUid = $import->getUid();
 
         $lock = $this->lockingService->createLock("statistic.$importUid.$tableName");

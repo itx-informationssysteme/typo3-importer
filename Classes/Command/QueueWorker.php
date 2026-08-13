@@ -2,7 +2,6 @@
 
 namespace Itx\Importer\Command;
 
-use DateTime;
 use Doctrine\DBAL\DBALException;
 use Exception;
 use Itx\Importer\Command\Producer\AbstractJobProducer;
@@ -13,6 +12,7 @@ use Itx\Importer\Domain\Model\Job;
 use Itx\Importer\Domain\Repository\ImportRepository;
 use Itx\Importer\Domain\Repository\JobRepository;
 use Itx\Importer\Exception\JobAlreadyGoneException;
+use Itx\Importer\Service\ConfigurationLoaderService;
 use Itx\Importer\Service\EmailService;
 use Itx\Importer\Service\JobQueueService;
 use Psr\Log\LoggerInterface;
@@ -24,7 +24,6 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
-use Throwable;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Core\Environment;
@@ -34,7 +33,6 @@ use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use Itx\Importer\Service\ConfigurationLoaderService;
 
 #[Channel('import')]
 class QueueWorker extends \Symfony\Component\Console\Command\Command
@@ -148,9 +146,9 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
 
     /**
      * @throws UnknownObjectException
-     * @throws IllegalObjectTypeException|Throwable
+     * @throws IllegalObjectTypeException|\Throwable
      */
-    public function handleException(Throwable|null $exception): void
+    public function handleException(\Throwable|null $exception): void
     {
         if ($exception === null) {
             return;
@@ -158,7 +156,7 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
 
         if ($this->currentJob) {
             $this->currentJob->setStatus(Job::STATUS_FAILED);
-            $this->currentJob->setEndTime(new DateTime());
+            $this->currentJob->setEndTime(new \DateTime());
             $this->currentJob->setFailureReason($exception);
 
             $this->jobRepository->update($this->currentJob);
@@ -187,7 +185,7 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
      * @throws DBALException
      * @throws IllegalObjectTypeException
      * @throws UnknownObjectException
-     * @throws Exception
+     * @throws \Exception
      * @throws TransportExceptionInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -198,7 +196,7 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
         $timeout = (int)$input->getArgument('timeout');
 
         $jobsWorkedOn = 0;
-        /** @var DateTime|null $currentTimeout */
+        /** @var \DateTime|null $currentTimeout */
         $currentTimeout = null;
 
         $this->logger->info($this->logPrefix . ' Starting queue worker');
@@ -233,7 +231,7 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
 
                 if ($currentTimeout === null) {
                     $this->logger->info($this->logPrefix . ' No job found for the first time, setting timeout');
-                    $currentTimeout = new DateTime();
+                    $currentTimeout = new \DateTime();
                 }
 
                 $this->logger->info($this->logPrefix . ' No job found, waiting for ' . $waitingTime . ' seconds');
@@ -254,7 +252,7 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
             $output->writeln($this->logPrefix . ' Working on job ' . $job->getUid());
             $this->processJob($job);
 
-            $job->setEndTime(new DateTime());
+            $job->setEndTime(new \DateTime());
 
             $this->jobRepository->update($job);
             $this->persistenceManager->persistAll();
@@ -270,7 +268,7 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     protected function processJob(Job $job): void
     {
@@ -291,7 +289,7 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
                     $this->jobQueueService->addJob($job->getImport(), $newPayload);
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->error(
                 $this->logPrefix . ' Error while processing job {uid}',
                 [
@@ -337,7 +335,7 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
         foreach ($this->jobRepository->findJobsThatExceededTimeout($timeout, $job->getImport()) as $timeoutJob) {
             $this->logger->info($this->logPrefix . " Job {$timeoutJob->getUid()} exceeded timeout, setting to failed");
             $timeoutJob->setStatus(Job::STATUS_FAILED);
-            $timeoutJob->setEndTime(new DateTime());
+            $timeoutJob->setEndTime(new \DateTime());
             $timeoutJob->setFailureReason("Job exceeded timeout of {$timeout}s");
             $this->jobRepository->update($timeoutJob);
         }
@@ -362,15 +360,15 @@ class QueueWorker extends \Symfony\Component\Console\Command\Command
             return;
         }
 
-        $job->setStartTime(new DateTime());
+        $job->setStartTime(new \DateTime());
         $job->setStatus(Job::STATUS_COMPLETED);
-        $job->setEndTime(new DateTime());
+        $job->setEndTime(new \DateTime());
 
         $this->jobRepository->update($job);
         $this->persistenceManager->persistAll();
 
         $import = $job->getImport();
-        $import->setEndTime(new DateTime());
+        $import->setEndTime(new \DateTime());
         $import->setTotalJobs($this->jobRepository->countTotalJobsByImport($import));
         $import->setCompletedJobs($this->jobRepository->countCompletedJobsByImport($import->getUid()));
         $import->setFailedJobs($this->jobRepository->countFailedJobsByImport($import->getUid()));

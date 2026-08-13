@@ -8,9 +8,7 @@ use Itx\Importer\Service\LockingService;
 
 class ExampleConsumer implements ConsumerInterface
 {
-    public function __construct(protected LockingService $lockingService) {
-
-    }
+    public function __construct(protected LockingService $lockingService) {}
 
     /**
      * @param ExamplePayload $payload
