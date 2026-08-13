@@ -2,15 +2,16 @@
 
 namespace Itx\Importer\Command;
 
-use Exception;
 use Itx\Importer\Domain\Repository\JobRepository;
+use Itx\Importer\Service\ConfigurationLoaderService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Core\Environment;
-use Itx\Importer\Service\ConfigurationLoaderService;
 
+#[AsCommand(name: 'importer:queue-worker-manager')]
 class QueueWorkerManager extends Command
 {
     protected ConfigurationLoaderService $configurationLoaderService;
@@ -23,16 +24,14 @@ class QueueWorkerManager extends Command
 
     public function __construct(
         ConfigurationLoaderService $configurationLoaderService,
-        protected JobRepository $jobRepository, 
-        string $name = null,
-    )
-    {
+        protected JobRepository $jobRepository,
+    ) {
         $this->configurationLoaderService = $configurationLoaderService;
-        parent::__construct($name);
+        parent::__construct();
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
