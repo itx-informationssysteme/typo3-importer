@@ -16,7 +16,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 class StatisticsService
 {
     /**
-     * @var array<string, Lock>
+     * @var array<string, LockingStrategyInterface>
      */
     protected array $locks = [];
 

@@ -2,7 +2,7 @@
 
 namespace Itx\Importer\Command;
 
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Exception;
 use Itx\Importer\Command\Producer\AbstractJobProducer;
 use Itx\Importer\Consumer\ConsumerInterface;

@@ -2,7 +2,7 @@
 
 namespace Itx\Importer\Domain\Repository;
 
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\ParameterType;
 use Itx\Importer\Domain\Model\Import;
 use Itx\Importer\Domain\Model\Job;
@@ -36,6 +36,7 @@ class JobRepository extends Repository
             'uid' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING,
         ]);
 
+        /** @var Job|null $job */
         $job = $query->execute()->getFirst();
         if ($job === null) {
             return null;

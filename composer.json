@@ -1,46 +1,46 @@
 {
-	"name" : "itx/importer",
-	"type" : "typo3-cms-extension",
-	"authors" : [
+	"name": "itx/importer",
+	"type": "typo3-cms-extension",
+	"authors": [
 		{
 			"name": "Benjamin Jasper",
 			"email": "benjamin.jasper@itx.de"
 		}
 	],
-	"description" : "A TYPO3 extension which contains a failure safe framework for building structured import processes.",
-	"homepage" : "https://www.itx.de/",
-	"license" : [
+	"description": "A TYPO3 extension which contains a failure safe framework for building structured import processes.",
+	"homepage": "https://www.itx.de/",
+	"license": [
 		"GPL-2.0-or-later"
 	],
-	"keywords" : [
+	"keywords": [
 		"TYPO3 CMS"
 	],
-	"support" : {
-		"email" : "typo-itx@itx.de",
-		"issues" : "https://github.com/itx-informationssysteme/typo3-importer/issues",
-		"docs" : "https://github.com/itx-informationssysteme/typo3-importer"
+	"support": {
+		"email": "typo-itx@itx.de",
+		"issues": "https://github.com/itx-informationssysteme/typo3-importer/issues",
+		"docs": "https://github.com/itx-informationssysteme/typo3-importer"
 	},
-	"require" : {
-		"php" : ">=8.1",
-		"typo3/cms-core" : "^13",
-		"typo3/cms-rte-ckeditor" : "^13",
-		"typo3/cms-fluid-styled-content" : "^13",
-		"typo3/cms-beuser" : "^13",
-		"typo3/cms-backend" : "^13",
-		"typo3/cms-scheduler" : "^13",
-		"symfony/serializer" : "^6"
+	"require": {
+		"php": ">=8.1",
+		"typo3/cms-core": "^13.4 || ^14.3",
+		"typo3/cms-rte-ckeditor": "^13.4 || ^14.3",
+		"typo3/cms-fluid-styled-content": "^13.4 || ^14.3",
+		"typo3/cms-beuser": "^13.4 || ^14.3",
+		"typo3/cms-backend": "^13.4 || ^14.3",
+		"typo3/cms-scheduler": "^13.4 || ^14.3",
+		"symfony/serializer": "^6"
 	},
-	"require-dev" : {
-		"phpstan/phpstan" : "^1.4"
+	"require-dev": {
+		"phpstan/phpstan": "^1.4"
 	},
-	"autoload" : {
-		"psr-4" : {
-			"Itx\\Importer\\" : "Classes/"
+	"autoload": {
+		"psr-4": {
+			"Itx\\Importer\\": "Classes/"
 		}
 	},
-	"extra" : {
-		"typo3/cms" : {
-			"extension-key" : "importer"
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "importer"
 		}
 	}
 }
