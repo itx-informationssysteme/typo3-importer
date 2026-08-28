@@ -19,12 +19,13 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
 use TYPO3\CMS\Frontend\Controller\ErrorController;
 use TYPO3\CMS\Scheduler\Scheduler;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\ExecuteSchedulableCommandTask;
+use TYPO3\CMS\Scheduler\Task\TaskSerializer;
+use TYPO3\CMS\Scheduler\Exception\InvalidTaskException;
 
 class ImportController extends ActionController
 {
@@ -43,7 +44,8 @@ class ImportController extends ActionController
         protected ModuleTemplateFactory $moduleTemplateFactory,
         protected ImportRepository $importRepository,
         protected JobRepository $jobRepository,
-        protected Scheduler $scheduler
+        protected Scheduler $scheduler,
+        protected TaskSerializer $taskSerializer
     ) {
         foreach ($producers as $producer) {
             $this->importProducer[$producer::getImportType()] = $producer;
@@ -56,8 +58,8 @@ class ImportController extends ActionController
         foreach ($tasks as $task) {
             /** @var ExecuteSchedulableCommandTask $task */
             if ($task instanceof ExecuteSchedulableCommandTask &&
-                str_starts_with($task->getCommandIdentifier(), 'importer:producer')) {
-                $importIdentifier = str_replace('importer:producer:', '', $task->getCommandIdentifier());
+                str_starts_with($task->getTaskType(), 'importer:producer')) {
+                $importIdentifier = str_replace('importer:producer:', '', $task->getTaskType());
                 $this->schedulerTasks[$importIdentifier] = $task;
             }
         }
@@ -139,9 +141,6 @@ class ImportController extends ActionController
         return $moduleTemplate->renderResponse('Import/ListAll');
     }
 
-    /**
-     * @throws StopActionException
-     */
     public function startImportAction(string $importType): ResponseInterface
     {
         // Exec producer console command to start import
@@ -179,7 +178,7 @@ class ImportController extends ActionController
         if ($import === null) {
             /** @var ErrorController $errorController */
             $errorController = GeneralUtility::makeInstance(ErrorController::class);
-            $response = $errorController->pageNotFoundAction($GLOBALS['TYPO3_REQUEST'], 'Import not available/does not exist');
+            $response = $errorController->pageNotFoundAction($this->request, 'Import not available/does not exist');
             throw new ImmediateResponseException($response, 1599638331);
         }
 
@@ -215,14 +214,14 @@ class ImportController extends ActionController
         return $moduleTemplate->renderResponse('Import/Show');
     }
 
-    public function fetchSchedulerTasks()
+    public function fetchSchedulerTasks(): array
     {
         $tasks = [];
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_scheduler_task');
 
         $queryBuilder
-            ->select('serialized_task_object')
+            ->select('*')
             ->from('tx_scheduler_task')
             ->where(
                 $queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
@@ -230,19 +229,18 @@ class ImportController extends ActionController
 
         $result = $queryBuilder->executeQuery();
         while ($row = $result->fetchAssociative()) {
-            /** @var Task\AbstractTask $task */
-            $task = unserialize($row['serialized_task_object']);
-            // Add the task to the list only if it is valid
-            if ($this->isValidTaskObject($task)) {
-                $task->setScheduler();
-                $tasks[] = $task;
+            try {
+                $task = $this->taskSerializer->deserialize($row);
+            } catch (InvalidTaskException) {
+                continue;
             }
+            $tasks[] = $task;
         }
 
         return $tasks;
     }
 
-    public function isValidTaskObject($task)
+    public function isValidTaskObject($task): bool
     {
         return $task instanceof AbstractTask && get_class($task->getExecution()) !== \__PHP_Incomplete_Class::class;
     }

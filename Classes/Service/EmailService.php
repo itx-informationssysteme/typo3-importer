@@ -15,6 +15,9 @@ use TYPO3\CMS\Core\Mail\Mailer;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 
 #[Channel('import')]
 class EmailService
