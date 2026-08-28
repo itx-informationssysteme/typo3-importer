@@ -13,7 +13,6 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
-use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -24,6 +23,8 @@ use TYPO3\CMS\Frontend\Controller\ErrorController;
 use TYPO3\CMS\Scheduler\Scheduler;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\ExecuteSchedulableCommandTask;
+use TYPO3\CMS\Scheduler\Task\TaskSerializer;
+use TYPO3\CMS\Scheduler\Exception\InvalidTaskException;
 
 class ImportController extends ActionController
 {
@@ -42,7 +43,8 @@ class ImportController extends ActionController
         protected ModuleTemplateFactory $moduleTemplateFactory,
         protected ImportRepository $importRepository,
         protected JobRepository $jobRepository,
-        protected Scheduler $scheduler
+        protected Scheduler $scheduler,
+        protected TaskSerializer $taskSerializer
     ) {
         foreach ($producers as $producer) {
             $this->importProducer[$producer::getImportType()] = $producer;
@@ -211,14 +213,14 @@ class ImportController extends ActionController
         return $moduleTemplate->renderResponse('Import/Show');
     }
 
-    public function fetchSchedulerTasks()
+    public function fetchSchedulerTasks(): array
     {
         $tasks = [];
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_scheduler_task');
 
         $queryBuilder
-            ->select('serialized_task_object')
+            ->select('*')
             ->from('tx_scheduler_task')
             ->where(
                 $queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
@@ -226,14 +228,12 @@ class ImportController extends ActionController
 
         $result = $queryBuilder->executeQuery();
         while ($row = $result->fetchAssociative()) {
-            /** @var AbstractTask $task */
-            $task = unserialize($row['serialized_task_object']);
-            // Add the task to the list only if it is valid
-            if ($this->isValidTaskObject($task)) {
-                // @phpstan-ignore-next-line method.notFound (setScheduler() is @internal but still required — Core itself calls it the same way before executing tasks)
-                $task->setScheduler();
-                $tasks[] = $task;
+            try {
+                $task = $this->taskSerializer->deserialize($row);
+            } catch (InvalidTaskException) {
+                continue;
             }
+            $tasks[] = $task;
         }
 
         return $tasks;

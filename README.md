@@ -13,13 +13,13 @@ its jobs, statistics and potential failures.
 
 To run the queue worker for the importer extension, run the following command:
 
-    vendor/bin/typo3cms importer:queue-worker
+    vendor/bin/typo3 importer:queue-worker
 
 This will run a single queue worker process. You can run multiple queue workers in parallel to speed up the import.
 
 To have them run automatically in multiple instances, you can use the following command:
 
-    vendor/bin/typo3cms importer:queue-worker-manager <optional worker count>
+    vendor/bin/typo3 importer:queue-worker-manager <optional worker count>
 
 ### Importing data
 
