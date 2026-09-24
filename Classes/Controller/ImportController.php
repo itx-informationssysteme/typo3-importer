@@ -58,8 +58,8 @@ class ImportController extends ActionController
         foreach ($tasks as $task) {
             /** @var ExecuteSchedulableCommandTask $task */
             if ($task instanceof ExecuteSchedulableCommandTask &&
-                str_starts_with($task->getTaskType(), 'importer:producer')) {
-                $importIdentifier = str_replace('importer:producer:', '', $task->getTaskType());
+                str_starts_with($task->getCommandIdentifier(), 'importer:producer')) {
+                $importIdentifier = str_replace('importer:producer:', '', $task->getCommandIdentifier());
                 $this->schedulerTasks[$importIdentifier] = $task;
             }
         }
@@ -230,7 +230,7 @@ class ImportController extends ActionController
         $result = $queryBuilder->executeQuery();
         while ($row = $result->fetchAssociative()) {
             try {
-                $task = $this->taskSerializer->deserialize($row);
+                $task = $this->taskSerializer->deserialize($row['serialized_task_object']);
             } catch (InvalidTaskException) {
                 continue;
             }
