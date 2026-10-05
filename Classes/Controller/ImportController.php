@@ -21,11 +21,12 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
 use TYPO3\CMS\Frontend\Controller\ErrorController;
+use TYPO3\CMS\Scheduler\Exception\InvalidTaskException;
+use TYPO3\CMS\Scheduler\Execution;
 use TYPO3\CMS\Scheduler\Scheduler;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\ExecuteSchedulableCommandTask;
 use TYPO3\CMS\Scheduler\Task\TaskSerializer;
-use TYPO3\CMS\Scheduler\Exception\InvalidTaskException;
 
 class ImportController extends ActionController
 {
@@ -37,7 +38,7 @@ class ImportController extends ActionController
     protected array $importProducer = [];
 
     /** @var array<string,ExecuteSchedulableCommandTask> */
-    protected array $schedulerTasks;
+    protected array $schedulerTasks = [];
 
     public function __construct(
         iterable $producers,
@@ -58,8 +59,8 @@ class ImportController extends ActionController
         foreach ($tasks as $task) {
             /** @var ExecuteSchedulableCommandTask $task */
             if ($task instanceof ExecuteSchedulableCommandTask &&
-                str_starts_with($task->getCommandIdentifier(), 'importer:producer')) {
-                $importIdentifier = str_replace('importer:producer:', '', $task->getCommandIdentifier());
+                str_starts_with($task->getTaskType(), 'importer:producer:')) {
+                $importIdentifier = str_replace('importer:producer:', '', $task->getTaskType());
                 $this->schedulerTasks[$importIdentifier] = $task;
             }
         }
@@ -214,6 +215,9 @@ class ImportController extends ActionController
         return $moduleTemplate->renderResponse('Import/Show');
     }
 
+    /**
+     * @return array<AbstractTask>
+     */
     public function fetchSchedulerTasks(): array
     {
         $tasks = [];
@@ -230,7 +234,7 @@ class ImportController extends ActionController
         $result = $queryBuilder->executeQuery();
         while ($row = $result->fetchAssociative()) {
             try {
-                $task = $this->taskSerializer->deserialize($row['serialized_task_object']);
+                $task = $this->taskSerializer->deserialize($row);
             } catch (InvalidTaskException) {
                 continue;
             }
