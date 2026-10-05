@@ -28,5 +28,5 @@ $EM_CONF[$_EXTKEY] = [
     'clearCacheOnLoad' => 1,
     'author' => 'it.x informationssysteme gmbh',
     'author_email' => '',
-    'version' => '2.1.2',
+    'version' => '2.1.3',
 ];
