@@ -10,9 +10,9 @@ $EM_CONF[$_EXTKEY] = [
     'category' => 'extensions',
     'constraints' => [
         'depends' => [
-            'typo3' => '13.4.0-14.9.99',
-            'fluid_styled_content' => '13.4.0-14.9.99',
-            'rte_ckeditor' => '13.4.0-14.9.99',
+            'typo3' => '14.3.0-14.9.99',
+            'fluid_styled_content' => '14.3.0-14.9.99',
+            'rte_ckeditor' => '14.3.0-14.9.99',
         ],
         'conflicts' => [
         ],
@@ -28,5 +28,5 @@ $EM_CONF[$_EXTKEY] = [
     'clearCacheOnLoad' => 1,
     'author' => 'it.x informationssysteme gmbh',
     'author_email' => '',
-    'version' => '2.1.3',
+    'version' => '3.0.0',
 ];
