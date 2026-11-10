@@ -5,8 +5,11 @@ namespace Itx\Importer\Service;
 use Itx\Importer\Domain\Model\Import;
 use Itx\Importer\Domain\Repository\BackendUserRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
+use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Log\Channel;
@@ -15,9 +18,6 @@ use TYPO3\CMS\Core\Mail\Mailer;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 
 #[Channel('import')]
 class EmailService

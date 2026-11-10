@@ -28,7 +28,7 @@
 		"typo3/cms-beuser": "^14.3",
 		"typo3/cms-backend": "^14.3",
 		"typo3/cms-scheduler": "^14.3",
-		"symfony/serializer": "^6"
+		"symfony/serializer": "^6 | ^7"
 	},
 	"require-dev": {
 		"phpstan/phpstan": "^1.4"
