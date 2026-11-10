@@ -2,7 +2,6 @@
 
 namespace Itx\Importer\ViewHelpers;
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 class DateIntervalViewHelper extends AbstractViewHelper
