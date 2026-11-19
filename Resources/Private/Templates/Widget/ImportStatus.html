@@ -1,0 +1,89 @@
+<html
+	xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+	data-namespace-typo3-fluid="true">
+	<f:if condition="{types}">
+		<f:then>
+			<div class="table-responsive px-3">
+				<table class="table-striped table-hover table-sm mb-0 table">
+					<thead>
+						<tr>
+							<th>
+								<f:translate
+									key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:column.import" />
+							</th>
+							<th>
+								<f:translate
+									key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:column.status" />
+							</th>
+							<th>
+								<f:translate
+									key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:column.start" />
+							</th>
+							<th>
+								<f:translate
+									key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:column.duration" />
+							</th>
+							<th>
+								<f:translate
+									key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:column.jobs" />
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<f:for each="{types}" as="entry">
+							<tr>
+								<td>{entry.label}</td>
+								<f:if condition="{entry.import}">
+									<f:then>
+										<td><f:render partial="Backend/ImportStatus" arguments="{import: entry.import}" /></td>
+										<td><f:format.date format="d.m.Y - H:i">{entry.import.start_time}</f:format.date></td>
+										<td>
+											<f:if condition="{entry.duration}"
+												><f:then>{entry.duration}</f:then><f:else>-</f:else></f:if
+											>
+										</td>
+										<td style="min-width: 8rem">
+											<progress
+												class="w-100"
+												value="{entry.jobs.progress}"
+												max="100"
+												title="{entry.jobs.progress}%"></progress>
+											<small>
+												{entry.jobs.done}/{entry.jobs.total}
+												<f:if condition="{entry.jobs.failed} > 0">
+													<span class="text-danger"
+														>(<f:translate
+															key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:failedCount"
+															arguments="{0: entry.jobs.failed}" />)</span
+													>
+												</f:if>
+											</small>
+										</td>
+									</f:then>
+									<f:else>
+										<td colspan="4" class="text-muted">
+											<f:translate
+												key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:neverRun" />
+										</td>
+									</f:else>
+								</f:if>
+							</tr>
+						</f:for>
+					</tbody>
+				</table>
+			</div>
+		</f:then>
+		<f:else>
+			<p class="text-muted px-3">
+				<f:translate key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:noImports" />
+			</p>
+		</f:else>
+	</f:if>
+
+	<div class="px-3 pt-2 pb-3">
+		<a href="{be:moduleLink(route: 'import_manager')}" class="btn btn-default btn-sm">
+			<f:translate key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:openModule" />
+		</a>
+	</div>
+</html>

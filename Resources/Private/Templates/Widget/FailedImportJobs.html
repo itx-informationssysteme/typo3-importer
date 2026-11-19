@@ -1,0 +1,53 @@
+<html
+	xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+	data-namespace-typo3-fluid="true">
+	<f:if condition="{jobs}">
+		<f:then>
+			<div class="table-responsive px-3">
+				<table class="table-striped table-hover table-sm mb-0 table">
+					<thead>
+						<tr>
+							<th>
+								<f:translate
+									key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:column.import" />
+							</th>
+							<th>
+								<f:translate
+									key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:column.time" />
+							</th>
+							<th>
+								<f:translate
+									key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:column.failureReason" />
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<f:for each="{jobs}" as="job">
+							<tr>
+								<td>{job.label} <small class="text-muted">[{job.import}/{job.uid}]</small></td>
+								<td style="white-space: nowrap">
+									<f:format.date format="d.m.Y - H:i">{job.end_time}</f:format.date>
+								</td>
+								<td title="{job.failure_reason}">
+									<f:format.crop maxCharacters="160" append="…">{job.failure_reason}</f:format.crop>
+								</td>
+							</tr>
+						</f:for>
+					</tbody>
+				</table>
+			</div>
+		</f:then>
+		<f:else>
+			<p class="text-success px-3">
+				<f:translate key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:noFailedJobs" />
+			</p>
+		</f:else>
+	</f:if>
+
+	<div class="px-3 pt-2 pb-3">
+		<a href="{be:moduleLink(route: 'import_manager')}" class="btn btn-default btn-sm">
+			<f:translate key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:openModule" />
+		</a>
+	</div>
+</html>

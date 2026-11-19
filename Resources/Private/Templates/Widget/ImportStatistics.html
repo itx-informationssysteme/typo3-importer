@@ -1,0 +1,73 @@
+<html
+	xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+	data-namespace-typo3-fluid="true">
+	<f:if condition="{groups}">
+		<f:then>
+			<f:for each="{groups}" as="group">
+				<h4 class="h6 mb-2 px-3 pt-3">
+					{group.label}
+					<small class="text-muted"
+						><f:format.date format="d.m.Y - H:i">{group.import.start_time}</f:format.date></small
+					>
+					<f:render partial="Backend/ImportStatus" arguments="{import: group.import}" />
+				</h4>
+				<div class="table-responsive px-3">
+					<table class="table-striped table-hover table-sm mb-0 table">
+						<thead>
+							<tr>
+								<th>
+									<f:translate
+										key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:column.record" />
+								</th>
+								<th>
+									<f:translate
+										key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:column.added" />
+								</th>
+								<th>
+									<f:translate
+										key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:column.updated" />
+								</th>
+								<th>
+									<f:translate
+										key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:column.deleted" />
+								</th>
+								<th>
+									<f:translate
+										key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:column.unchanged" />
+								</th>
+								<th>
+									<f:translate
+										key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:column.total" />
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<f:for each="{group.statistics}" as="statistic">
+								<tr>
+									<td title="{statistic.record_table}">{statistic.record_name}</td>
+									<td class="text-success">+{statistic.number_added}</td>
+									<td class="text-primary">{statistic.number_updated}</td>
+									<td class="text-danger">-{statistic.number_deleted}</td>
+									<td>{statistic.number_unchanged}</td>
+									<td>{statistic.total_after_import}</td>
+								</tr>
+							</f:for>
+						</tbody>
+					</table>
+				</div>
+			</f:for>
+		</f:then>
+		<f:else>
+			<p class="text-muted px-3">
+				<f:translate key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:noStatistics" />
+			</p>
+		</f:else>
+	</f:if>
+
+	<div class="px-3 pt-2 pb-3">
+		<a href="{be:moduleLink(route: 'import_manager')}" class="btn btn-default btn-sm">
+			<f:translate key="LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:openModule" />
+		</a>
+	</div>
+</html>

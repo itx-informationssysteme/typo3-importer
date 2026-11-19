@@ -1,0 +1,56 @@
+# Dashboard widgets (require EXT:dashboard)
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Itx\Importer\Dashboard\ImportDashboardDataProvider:
+        arguments:
+            $producers: !tagged_iterator queue_producer
+
+    widgets.dashboard.widget.importerImportStatus:
+        class: 'Itx\Importer\Widgets\ImportStatusWidget'
+        arguments:
+            $options:
+                refreshAvailable: true
+        tags:
+            - name: dashboard.widget
+              identifier: 'importerImportStatus'
+              groupNames: 'importer'
+              title: 'LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:widgets.importStatus.title'
+              description: 'LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:widgets.importStatus.description'
+              iconIdentifier: 'importer-extension'
+              height: 'medium'
+              width: 'large'
+
+    widgets.dashboard.widget.importerImportStatistics:
+        class: 'Itx\Importer\Widgets\ImportStatisticsWidget'
+        arguments:
+            $options:
+                refreshAvailable: true
+        tags:
+            - name: dashboard.widget
+              identifier: 'importerImportStatistics'
+              groupNames: 'importer'
+              title: 'LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:widgets.importStatistics.title'
+              description: 'LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:widgets.importStatistics.description'
+              iconIdentifier: 'importer-extension'
+              height: 'large'
+              width: 'large'
+
+    widgets.dashboard.widget.importerFailedImportJobs:
+        class: 'Itx\Importer\Widgets\FailedImportJobsWidget'
+        arguments:
+            $options:
+                refreshAvailable: true
+                limit: 10
+        tags:
+            - name: dashboard.widget
+              identifier: 'importerFailedImportJobs'
+              groupNames: 'importer'
+              title: 'LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:widgets.failedImportJobs.title'
+              description: 'LLL:EXT:importer/Resources/Private/Language/locallang_dashboard.xlf:widgets.failedImportJobs.description'
+              iconIdentifier: 'importer-extension'
+              height: 'medium'
+              width: 'large'

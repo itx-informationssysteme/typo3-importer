@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages">
+        <header>
+            <authorName>Itx-Typo3-Team</authorName>
+        </header>
+        <body>
+            <trans-unit id="widgetGroup.importer"><source>Importer</source></trans-unit>
+            <trans-unit id="widgets.importStatus.title"><source>Import status</source></trans-unit>
+            <trans-unit id="widgets.importStatus.description"><source>Latest run of every import: status, duration and job progress</source></trans-unit>
+            <trans-unit id="widgets.importStatistics.title"><source>Import statistics</source></trans-unit>
+            <trans-unit id="widgets.importStatistics.description"><source>Records added, updated and deleted by the latest run of every import</source></trans-unit>
+            <trans-unit id="widgets.failedImportJobs.title"><source>Failed import jobs</source></trans-unit>
+            <trans-unit id="widgets.failedImportJobs.description"><source>Most recent failed import jobs with their failure reason</source></trans-unit>
+            <trans-unit id="column.import"><source>Import</source></trans-unit>
+            <trans-unit id="column.status"><source>Status</source></trans-unit>
+            <trans-unit id="column.start"><source>Start</source></trans-unit>
+            <trans-unit id="column.duration"><source>Duration</source></trans-unit>
+            <trans-unit id="column.jobs"><source>Jobs</source></trans-unit>
+            <trans-unit id="column.record"><source>Record</source></trans-unit>
+            <trans-unit id="column.added"><source>Added</source></trans-unit>
+            <trans-unit id="column.updated"><source>Updated</source></trans-unit>
+            <trans-unit id="column.deleted"><source>Deleted</source></trans-unit>
+            <trans-unit id="column.unchanged"><source>Unchanged</source></trans-unit>
+            <trans-unit id="column.total"><source>Total after import</source></trans-unit>
+            <trans-unit id="column.time"><source>Time</source></trans-unit>
+            <trans-unit id="column.failureReason"><source>Failure reason</source></trans-unit>
+            <trans-unit id="failedCount"><source>%d failed</source></trans-unit>
+            <trans-unit id="neverRun"><source>No import has run yet</source></trans-unit>
+            <trans-unit id="noImports"><source>No imports available</source></trans-unit>
+            <trans-unit id="noStatistics"><source>No statistics available yet</source></trans-unit>
+            <trans-unit id="noFailedJobs"><source>No failed jobs</source></trans-unit>
+            <trans-unit id="openModule"><source>Open import management</source></trans-unit>
+        </body>
+    </file>
+</xliff>
